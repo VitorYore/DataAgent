@@ -1,0 +1,101 @@
+Fornecedor_ID,Nome,Histórico de Fornecimento,Custo de Transporte,Prazo Médio de Entrega (dias),Cidade,Logo
+1,Branco Valente Lda.,87,115.39,3,Mafra,https://ui-avatars.com/api/?name=Branco+Valente+Lda.&size=256&background=random&color=fff
+2,Cunha S/A,7,268.34,4,Lourinhã,https://ui-avatars.com/api/?name=Cunha+S/A&size=256&background=random&color=fff
+3,Valente Domingues e Filhos,70,494.83,11,Montijo,https://ui-avatars.com/api/?name=Valente+Domingues+e+Filhos&size=256&background=random&color=fff
+4,Ferreira Marques e Filhos,95,220.97,1,Vila Pouca de Aguiar,https://ui-avatars.com/api/?name=Ferreira+Marques+e+Filhos&size=256&background=random&color=fff
+5,Domingues Lda.,79,184.88,14,Loures,https://ui-avatars.com/api/?name=Domingues+Lda.&size=256&background=random&color=fff
+6,Matos,55,83.22,15,Lagoa,https://ui-avatars.com/api/?name=Matos&size=256&background=random&color=fff
+7,Vicente Nogueira Lda.,35,317.38,7,Olhão,https://ui-avatars.com/api/?name=Vicente+Nogueira+Lda.&size=256&background=random&color=fff
+8,Coelho Pereira S.A.,18,480.04,15,Mealhada,https://ui-avatars.com/api/?name=Coelho+Pereira+S.A.&size=256&background=random&color=fff
+9,Moreira Leite Lda.,94,107.3,7,Beja,https://ui-avatars.com/api/?name=Moreira+Leite+Lda.&size=256&background=random&color=fff
+10,Simões,11,386.98,6,Vila Franca do Campo,https://ui-avatars.com/api/?name=Simões&size=256&background=random&color=fff
+11,Valente,32,162.07,13,Nazaré,https://ui-avatars.com/api/?name=Valente&size=256&background=random&color=fff
+12,Gomes,4,53.66,11,Vila Nova de Santo André,https://ui-avatars.com/api/?name=Gomes&size=256&background=random&color=fff
+13,Teixeira,84,266.8,7,Lagoa,https://ui-avatars.com/api/?name=Teixeira&size=256&background=random&color=fff
+14,Moura S/A,26,474.22,15,Alcácer do Sal,https://ui-avatars.com/api/?name=Moura+S/A&size=256&background=random&color=fff
+15,Leal,97,139.82,4,Oeiras,https://ui-avatars.com/api/?name=Leal&size=256&background=random&color=fff
+16,Maia,72,154.83,6,Fafe,https://ui-avatars.com/api/?name=Maia&size=256&background=random&color=fff
+17,Moura Ferreira e Filhos,77,379.75,12,Vila Nova de Santo André,https://ui-avatars.com/api/?name=Moura+Ferreira+e+Filhos&size=256&background=random&color=fff
+18,Freitas Soares S/A,6,118.81,1,Valongo,https://ui-avatars.com/api/?name=Freitas+Soares+S/A&size=256&background=random&color=fff
+19,Amorim Lda.,7,200.93,12,Castelo de Paiva,https://ui-avatars.com/api/?name=Amorim+Lda.&size=256&background=random&color=fff
+20,Pires,96,329.86,6,Barreiro,https://ui-avatars.com/api/?name=Pires&size=256&background=random&color=fff
+21,Almeida,4,163.13,14,Vieira do Minho,https://ui-avatars.com/api/?name=Almeida&size=256&background=random&color=fff
+22,Castro Monteiro e Filhos,73,296.98,3,Póvoa de Lanhoso,https://ui-avatars.com/api/?name=Castro+Monteiro+e+Filhos&size=256&background=random&color=fff
+23,Martins,24,399.45,9,Montijo,https://ui-avatars.com/api/?name=Martins&size=256&background=random&color=fff
+24,Santos,28,96.88,12,Figueira da Foz,https://ui-avatars.com/api/?name=Santos&size=256&background=random&color=fff
+25,Pinto,40,439.47,4,Odivelas,https://ui-avatars.com/api/?name=Pinto&size=256&background=random&color=fff
+26,Ribeiro,80,439.59,1,Esposende,https://ui-avatars.com/api/?name=Ribeiro&size=256&background=random&color=fff
+27,Pinho Simões e Filhos,68,256.66,8,Mafra,https://ui-avatars.com/api/?name=Pinho+Simões+e+Filhos&size=256&background=random&color=fff
+28,Loureiro S/A,61,257.45,13,Loulé,https://ui-avatars.com/api/?name=Loureiro+S/A&size=256&background=random&color=fff
+29,Cunha,36,426.44,13,Paredes de Coura,https://ui-avatars.com/api/?name=Cunha&size=256&background=random&color=fff
+30,Branco,23,234.87,8,Vendas Novas,https://ui-avatars.com/api/?name=Branco&size=256&background=random&color=fff
+31,Reis,50,129.92,7,Alcoutim,https://ui-avatars.com/api/?name=Reis&size=256&background=random&color=fff
+32,Gaspar Marques S.A.,15,87.81,12,Vila do Porto,https://ui-avatars.com/api/?name=Gaspar+Marques+S.A.&size=256&background=random&color=fff
+33,Santos,95,211.66,8,Viana do Alentejo,https://ui-avatars.com/api/?name=Santos&size=256&background=random&color=fff
+34,Figueiredo,63,289.22,1,Odemira,https://ui-avatars.com/api/?name=Figueiredo&size=256&background=random&color=fff
+35,Sá Santos e Filhos,94,160.49,10,Vila do Conde,https://ui-avatars.com/api/?name=Sá+Santos+e+Filhos&size=256&background=random&color=fff
+36,Brito Lda.,46,89.38,7,Ribeira Grande,https://ui-avatars.com/api/?name=Brito+Lda.&size=256&background=random&color=fff
+37,Torres,1,233.39,14,Caminha,https://ui-avatars.com/api/?name=Torres&size=256&background=random&color=fff
+38,Vieira,96,355.42,15,Vila do Corvo,https://ui-avatars.com/api/?name=Vieira&size=256&background=random&color=fff
+39,Araújo,42,389.92,11,São Brás de Alportel,https://ui-avatars.com/api/?name=Araújo&size=256&background=random&color=fff
+40,Melo Lda.,69,92.19,6,Angra do Heroísmo,https://ui-avatars.com/api/?name=Melo+Lda.&size=256&background=random&color=fff
+41,Campos Lda.,45,143.27,1,Ferreira do Alentejo,https://ui-avatars.com/api/?name=Campos+Lda.&size=256&background=random&color=fff
+42,Figueiredo e Filhos,63,424.45,12,Castro Marim,https://ui-avatars.com/api/?name=Figueiredo+e+Filhos&size=256&background=random&color=fff
+43,Baptista,8,174.11,7,Vila do Porto,https://ui-avatars.com/api/?name=Baptista&size=256&background=random&color=fff
+44,Gaspar,57,473.7,1,Seixal,https://ui-avatars.com/api/?name=Gaspar&size=256&background=random&color=fff
+45,Carvalho Pires Lda.,41,429.54,4,Horta,https://ui-avatars.com/api/?name=Carvalho+Pires+Lda.&size=256&background=random&color=fff
+46,Jesus e Filhos,79,467.3,11,Angra do Heroísmo,https://ui-avatars.com/api/?name=Jesus+e+Filhos&size=256&background=random&color=fff
+47,Leal Lda.,39,103.54,1,Loulé,https://ui-avatars.com/api/?name=Leal+Lda.&size=256&background=random&color=fff
+48,Maia Gomes e Filhos,94,104.52,4,Santiago do Cacém,https://ui-avatars.com/api/?name=Maia+Gomes+e+Filhos&size=256&background=random&color=fff
+49,Cruz,45,156.73,12,Santa Cruz das Flores,https://ui-avatars.com/api/?name=Cruz&size=256&background=random&color=fff
+50,Jesus Gaspar S/A,22,215.14,14,Seixal,https://ui-avatars.com/api/?name=Jesus+Gaspar+S/A&size=256&background=random&color=fff
+51,Guerreiro,57,179.84,15,Espinho,https://ui-avatars.com/api/?name=Guerreiro&size=256&background=random&color=fff
+52,Marques Soares Lda.,16,393.52,3,Oliveira do Hospital,https://ui-avatars.com/api/?name=Marques+Soares+Lda.&size=256&background=random&color=fff
+53,Amorim Pereira e Filhos,80,445.14,12,Santa Cruz das Flores,https://ui-avatars.com/api/?name=Amorim+Pereira+e+Filhos&size=256&background=random&color=fff
+54,Leal Mendes e Filhos,70,249.0,3,Esposende,https://ui-avatars.com/api/?name=Leal+Mendes+e+Filhos&size=256&background=random&color=fff
+55,Henriques,40,146.8,15,Peniche,https://ui-avatars.com/api/?name=Henriques&size=256&background=random&color=fff
+56,Simões Matos S.A.,34,270.95,8,Valença,https://ui-avatars.com/api/?name=Simões+Matos+S.A.&size=256&background=random&color=fff
+57,Mota,60,268.32,15,Póvoa de Lanhoso,https://ui-avatars.com/api/?name=Mota&size=256&background=random&color=fff
+58,Leal S.A.,56,395.52,15,Coimbra,https://ui-avatars.com/api/?name=Leal+S.A.&size=256&background=random&color=fff
+59,Nogueira,59,182.38,3,Figueira da Foz,https://ui-avatars.com/api/?name=Nogueira&size=256&background=random&color=fff
+60,Ribeiro,94,364.02,13,Arraiolos,https://ui-avatars.com/api/?name=Ribeiro&size=256&background=random&color=fff
+61,Valente e Filhos,95,349.67,4,Santa Cruz da Graciosa,https://ui-avatars.com/api/?name=Valente+e+Filhos&size=256&background=random&color=fff
+62,Correia Vaz S/A,85,492.97,12,Vizela,https://ui-avatars.com/api/?name=Correia+Vaz+S/A&size=256&background=random&color=fff
+63,Abreu,92,58.79,8,Póvoa de Varzim,https://ui-avatars.com/api/?name=Abreu&size=256&background=random&color=fff
+64,Lima Lda.,58,64.28,9,Marinha Grande,https://ui-avatars.com/api/?name=Lima+Lda.&size=256&background=random&color=fff
+65,Pinho,31,490.04,4,Ponte de Sor,https://ui-avatars.com/api/?name=Pinho&size=256&background=random&color=fff
+66,Lourenço S/A,25,218.27,1,Póvoa de Varzim,https://ui-avatars.com/api/?name=Lourenço+S/A&size=256&background=random&color=fff
+67,Loureiro Mota S/A,88,342.25,10,Torres Vedras,https://ui-avatars.com/api/?name=Loureiro+Mota+S/A&size=256&background=random&color=fff
+68,Martins,4,81.09,12,Lajes das Flores,https://ui-avatars.com/api/?name=Martins&size=256&background=random&color=fff
+69,Abreu e Filhos,60,317.33,12,Alcácer do Sal,https://ui-avatars.com/api/?name=Abreu+e+Filhos&size=256&background=random&color=fff
+70,Borges Fonseca Lda.,31,171.0,10,Alcanena,https://ui-avatars.com/api/?name=Borges+Fonseca+Lda.&size=256&background=random&color=fff
+71,Azevedo S/A,65,57.23,2,Murtosa,https://ui-avatars.com/api/?name=Azevedo+S/A&size=256&background=random&color=fff
+72,Figueiredo,94,85.21,1,Lagos,https://ui-avatars.com/api/?name=Figueiredo&size=256&background=random&color=fff
+73,Sousa e Filhos,94,406.54,14,Grândola,https://ui-avatars.com/api/?name=Sousa+e+Filhos&size=256&background=random&color=fff
+74,Alves S/A,41,160.53,10,Alcobaça,https://ui-avatars.com/api/?name=Alves+S/A&size=256&background=random&color=fff
+75,Leite Lda.,68,107.74,11,Estremoz,https://ui-avatars.com/api/?name=Leite+Lda.&size=256&background=random&color=fff
+76,Gonçalves Santos Lda.,100,292.27,12,Cuba,https://ui-avatars.com/api/?name=Gonçalves+Santos+Lda.&size=256&background=random&color=fff
+77,Antunes,84,179.35,7,Ponta Delgada,https://ui-avatars.com/api/?name=Antunes&size=256&background=random&color=fff
+78,Vicente,47,399.01,15,Ponta Delgada,https://ui-avatars.com/api/?name=Vicente&size=256&background=random&color=fff
+79,Matos Neto S/A,100,250.54,8,Portalegre,https://ui-avatars.com/api/?name=Matos+Neto+S/A&size=256&background=random&color=fff
+80,Monteiro e Filhos,8,174.06,8,Ponta Delgada,https://ui-avatars.com/api/?name=Monteiro+e+Filhos&size=256&background=random&color=fff
+81,Leal,15,171.99,9,Angra do Heroísmo,https://ui-avatars.com/api/?name=Leal&size=256&background=random&color=fff
+82,Valente Carneiro Lda.,7,494.6,5,Vila Real de Santo António,https://ui-avatars.com/api/?name=Valente+Carneiro+Lda.&size=256&background=random&color=fff
+83,Amorim S/A,22,215.52,4,Alenquer,https://ui-avatars.com/api/?name=Amorim+S/A&size=256&background=random&color=fff
+84,Marques S/A,93,431.14,12,Ovar,https://ui-avatars.com/api/?name=Marques+S/A&size=256&background=random&color=fff
+85,Neves,2,297.35,9,Funchal,https://ui-avatars.com/api/?name=Neves&size=256&background=random&color=fff
+86,Paiva Morais Lda.,57,133.45,15,Azambuja,https://ui-avatars.com/api/?name=Paiva+Morais+Lda.&size=256&background=random&color=fff
+87,Coelho e Filhos,45,240.32,6,Cuba,https://ui-avatars.com/api/?name=Coelho+e+Filhos&size=256&background=random&color=fff
+88,Figueiredo e Filhos,99,120.49,1,Cabeceiras de Basto,https://ui-avatars.com/api/?name=Figueiredo+e+Filhos&size=256&background=random&color=fff
+89,Domingues Soares e Filhos,49,69.27,11,Santa Cruz da Graciosa,https://ui-avatars.com/api/?name=Domingues+Soares+e+Filhos&size=256&background=random&color=fff
+90,Cardoso Gaspar Lda.,84,228.78,2,Alcobaça,https://ui-avatars.com/api/?name=Cardoso+Gaspar+Lda.&size=256&background=random&color=fff
+91,Pereira e Filhos,76,460.68,4,Portalegre,https://ui-avatars.com/api/?name=Pereira+e+Filhos&size=256&background=random&color=fff
+92,Leite,64,176.23,6,Portalegre,https://ui-avatars.com/api/?name=Leite&size=256&background=random&color=fff
+93,Borges Fonseca S/A,99,415.55,5,Funchal,https://ui-avatars.com/api/?name=Borges+Fonseca+S/A&size=256&background=random&color=fff
+94,Pinheiro,81,414.66,6,Peniche,https://ui-avatars.com/api/?name=Pinheiro&size=256&background=random&color=fff
+95,Lopes,9,142.97,6,Bragança,https://ui-avatars.com/api/?name=Lopes&size=256&background=random&color=fff
+96,Pinho,59,452.31,7,Santiago do Cacém,https://ui-avatars.com/api/?name=Pinho&size=256&background=random&color=fff
+97,Guerreiro,93,165.74,12,Aljezur,https://ui-avatars.com/api/?name=Guerreiro&size=256&background=random&color=fff
+98,Matos Jesus Lda.,76,420.89,14,Murtosa,https://ui-avatars.com/api/?name=Matos+Jesus+Lda.&size=256&background=random&color=fff
+99,Oliveira Melo S/A,65,483.22,12,Grândola,https://ui-avatars.com/api/?name=Oliveira+Melo+S/A&size=256&background=random&color=fff
+100,Esteves S.A.,69,286.2,1,Vieira do Minho,https://ui-avatars.com/api/?name=Esteves+S.A.&size=256&background=random&color=fff

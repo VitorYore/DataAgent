@@ -1,0 +1,172 @@
+{
+  "dataset": "data/samples (14 CSVs)",
+  "blocos_analiticos_identicos": [
+    "kpis",
+    "analise_temporal",
+    "clientes",
+    "desempenho",
+    "crescimento",
+    "dimensoes",
+    "produtos"
+  ],
+  "score_preservado": true,
+  "listas": {
+    "principais_riscos": {
+      "antes": [
+        {
+          "categoria": "faturamento",
+          "prioridade": "alta",
+          "mensagem": "Foi identificada uma sequência de quedas no faturamento nos períodos: 2023-08 -> 2023-09 -> 2023-10 -> 2023-11."
+        },
+        {
+          "categoria": "rentabilidade",
+          "prioridade": "media",
+          "mensagem": "Foram encontrados 604 registros com resultado negativo, totalizando -514238.41. Esses registros podem ser investigados para identificar fontes de perda."
+        },
+        {
+          "categoria": "crescimento",
+          "prioridade": "alta",
+          "mensagem": "A maior queda mensal ocorreu em 2018-08, com redução de 30.52%."
+        },
+        {
+          "categoria": "rentabilidade",
+          "prioridade": "alta",
+          "mensagem": "Foram identificados 604 registros com resultado negativo, totalizando -514238.41."
+        }
+      ],
+      "depois": [
+        {
+          "categoria": "maior_queda",
+          "prioridade": "alta",
+          "mensagem": "A maior queda mensal ocorreu em 2018-08, com redução de 30.52%."
+        },
+        {
+          "categoria": "sequencia_quedas_faturamento",
+          "prioridade": "alta",
+          "mensagem": "Foi identificada uma sequência de quedas no faturamento nos períodos: 2023-08 -> 2023-09 -> 2023-10 -> 2023-11."
+        },
+        {
+          "categoria": "resultado_negativo",
+          "prioridade": "alta",
+          "mensagem": "Foram identificados 604 registros com resultado negativo, totalizando -514238.41."
+        }
+      ]
+    },
+    "oportunidades": {
+      "antes": [
+        {
+          "categoria": "produto",
+          "prioridade": "media",
+          "mensagem": "O produto 'Officia (ID 724)' apresenta lucro acima da média e faturamento abaixo da média, indicando possível espaço para crescimento."
+        },
+        {
+          "categoria": "produto",
+          "prioridade": "media",
+          "mensagem": "O produto 'Accusantium (ID 362)' apresenta lucro acima da média e faturamento abaixo da média, indicando possível espaço para crescimento."
+        },
+        {
+          "categoria": "produto",
+          "prioridade": "media",
+          "mensagem": "O produto 'Maiores (ID 749)' apresenta lucro acima da média e faturamento abaixo da média, indicando possível espaço para crescimento."
+        }
+      ],
+      "depois": [
+        {
+          "categoria": "produto_crescimento",
+          "prioridade": "media",
+          "mensagem": "O produto 'Officia (ID 724)' apresenta lucro acima da média e faturamento abaixo da média, sendo um possível candidato para investigação de crescimento."
+        }
+      ]
+    },
+    "principais_insights": {
+      "antes": [
+        {
+          "tipo": "atencao",
+          "categoria": "crescimento",
+          "prioridade": "alta",
+          "mensagem": "A maior queda mensal ocorreu em 2018-08, com redução de 30.52%."
+        },
+        {
+          "tipo": "atencao",
+          "categoria": "rentabilidade",
+          "prioridade": "alta",
+          "mensagem": "Foram identificados 604 registros com resultado negativo, totalizando -514238.41."
+        },
+        {
+          "tipo": "positivo",
+          "categoria": "temporal",
+          "prioridade": "media",
+          "mensagem": "O período 2018-07 apresentou o maior faturamento, totalizando 5399483.4."
+        },
+        {
+          "tipo": "positivo",
+          "categoria": "crescimento",
+          "prioridade": "media",
+          "mensagem": "O maior crescimento mensal ocorreu em 2022-11, com aumento de 49.78%."
+        },
+        {
+          "tipo": "informativo",
+          "categoria": "produto",
+          "prioridade": "media",
+          "mensagem": "O produto 'Molestias (ID 425)' apresentou o maior volume de vendas, com 1935.0 unidades."
+        },
+        {
+          "tipo": "positivo",
+          "categoria": "produto",
+          "prioridade": "media",
+          "mensagem": "O produto 'Quis (ID 541)' apresentou o maior faturamento, totalizando 952866.23."
+        }
+      ],
+      "depois": [
+        {
+          "categoria": "maior_queda",
+          "prioridade": "alta",
+          "mensagem": "A maior queda mensal ocorreu em 2018-08, com redução de 30.52%.",
+          "tipo": "atencao"
+        },
+        {
+          "categoria": "sequencia_quedas_faturamento",
+          "prioridade": "alta",
+          "mensagem": "Foi identificada uma sequência de quedas no faturamento nos períodos: 2023-08 -> 2023-09 -> 2023-10 -> 2023-11.",
+          "tipo": "atencao"
+        },
+        {
+          "categoria": "resultado_negativo",
+          "prioridade": "alta",
+          "mensagem": "Foram identificados 604 registros com resultado negativo, totalizando -514238.41.",
+          "tipo": "atencao"
+        },
+        {
+          "categoria": "produto_crescimento",
+          "prioridade": "media",
+          "mensagem": "O produto 'Officia (ID 724)' apresenta lucro acima da média e faturamento abaixo da média, sendo um possível candidato para investigação de crescimento.",
+          "tipo": "oportunidade"
+        },
+        {
+          "categoria": "cliente_destaque",
+          "prioridade": "media",
+          "mensagem": "O cliente 'Kyara Santos (ID 874)' apresentou o maior faturamento da carteira, totalizando 1086012.31.",
+          "tipo": "positivo"
+        },
+        {
+          "categoria": "colaborador_desempenho",
+          "prioridade": "baixa",
+          "mensagem": "O destaque de faturamento na dimensão colaborador foi 'Marta Branco (ID 25)', totalizando 1697818.59.",
+          "tipo": "positivo"
+        },
+        {
+          "categoria": "loja_desempenho",
+          "prioridade": "baixa",
+          "mensagem": "O destaque de faturamento na dimensão loja foi 'Loja Araújo S/A (ID 3)', totalizando 101688347.5.",
+          "tipo": "positivo"
+        },
+        {
+          "categoria": "canal_desempenho",
+          "prioridade": "baixa",
+          "mensagem": "O destaque de faturamento na dimensão canal foi 'Física', totalizando 253660883.07.",
+          "tipo": "positivo"
+        }
+      ]
+    }
+  }
+}

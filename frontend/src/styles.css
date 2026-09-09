@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@theme {
+  --color-canvas: #0c1017;
+  --color-surface: #121923;
+  --color-line: #283241;
+  --color-muted: #9baabc;
+  --color-accent: #8aafff;
+  --font-sans: "Segoe UI", Arial, sans-serif;
+}
+
+:root { color-scheme: dark; }
+body { margin: 0; min-width: 320px; background: var(--color-canvas); color: #edf2f8; }
+button, a { -webkit-tap-highlight-color: transparent; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 4px; }

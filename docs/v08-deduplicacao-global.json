@@ -1,0 +1,46 @@
+{
+  "principais_riscos": [
+    {
+      "categoria": "maior_queda",
+      "prioridade": "alta",
+      "mensagem": "A maior queda mensal ocorreu em 2020-04, com redução de 36.34%."
+    },
+    {
+      "categoria": "sequencia_quedas_faturamento",
+      "prioridade": "alta",
+      "mensagem": "Foi identificada uma sequência de quedas no faturamento nos períodos: 2020-11 -> 2020-12."
+    },
+    {
+      "categoria": "resultado_negativo",
+      "prioridade": "alta",
+      "mensagem": "Foram identificados 1 registros com resultado negativo, totalizando -5.32."
+    }
+  ],
+  "oportunidades": [],
+  "principais_insights": [
+    {
+      "categoria": "melhor_periodo",
+      "prioridade": "media",
+      "mensagem": "O período 2020-10 apresentou o maior faturamento, totalizando 514219.47.",
+      "tipo": "positivo"
+    },
+    {
+      "categoria": "maior_crescimento",
+      "prioridade": "media",
+      "mensagem": "O maior crescimento mensal ocorreu em 2020-10, com aumento de 61.63%.",
+      "tipo": "positivo"
+    },
+    {
+      "categoria": "cliente_destaque",
+      "prioridade": "media",
+      "mensagem": "O cliente 'SUPERMERCADO X' apresentou o maior faturamento da carteira, totalizando 192735.5.",
+      "tipo": "positivo"
+    },
+    {
+      "categoria": "cliente_concentracao",
+      "prioridade": "baixa",
+      "mensagem": "Os 5 maiores clientes representam 23.39% do faturamento total.",
+      "tipo": "informativo"
+    }
+  ]
+}

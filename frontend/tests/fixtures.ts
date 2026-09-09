@@ -1,0 +1,11 @@
+// Somente testes isolados interceptam a API. A aplicação não importa este arquivo.
+import { test as base, expect } from '@playwright/test'
+import { resumoExecutivo } from '../src/mocks/resumoExecutivo'
+
+export const test = base.extend({
+  page: async ({ page }, use) => {
+    await page.route('**/api/analysis/latest', (route) => route.fulfill({ json: resumoExecutivo }))
+    await use(page)
+  },
+})
+export { expect }

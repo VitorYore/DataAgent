@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environment
+.venv/
+venv/
+
+# Python tools
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Node / React
+frontend/node_modules/
+frontend/dist/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# DataAgent temporary uploads
+data/uploads/
+
+# Validation temporary folders
+.validation-*/
+
+# Temporary files
+*.tmp
+*.log
+
+# Optional local reports
+# Descomente se não quiser versionar relatórios gerados:
+# reports/
+
+# Generated reports
+reports/

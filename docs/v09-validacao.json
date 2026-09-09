@@ -1,0 +1,203 @@
+{
+  "amostras": {
+    "resumo_identico": true,
+    "tabelas_inspecionadas": 14
+  },
+  "arquivos": {
+    "PLANILHA VITOR.xlsx": {
+      "antes": {
+        "linhas": 3508,
+        "colunas": 14,
+        "nomes": [
+          "20686",
+          "2020-01-06 00:00:00",
+          "128.7",
+          "128.7.1",
+          "DINHEIRO E CHEQUE ",
+          "ALFA",
+          "54.72",
+          "0.4251748251748252",
+          "Unnamed: 8",
+          "Unnamed: 9",
+          "Unnamed: 10",
+          "Unnamed: 11",
+          "Unnamed: 12",
+          "Unnamed: 13"
+        ]
+      },
+      "depois": {
+        "linhas": 3385,
+        "colunas": 11,
+        "nomes": [
+          "coluna_1",
+          "coluna_2",
+          "coluna_3",
+          "coluna_4",
+          "coluna_5",
+          "coluna_6",
+          "coluna_7",
+          "coluna_8",
+          "coluna_9",
+          "coluna_10",
+          "coluna_14"
+        ]
+      },
+      "ingestao": {
+        "arquivo": "PLANILHA VITOR.xlsx",
+        "cabecalho_detectado": false,
+        "linha_cabecalho": null,
+        "confianca_cabecalho": 0.0,
+        "linhas_anteriores_cabecalho": 0,
+        "linhas_vazias_removidas": 124,
+        "colunas_vazias_removidas": 3,
+        "colunas_renomeadas": [
+          {
+            "posicao": 1,
+            "original": "",
+            "novo": "coluna_1"
+          },
+          {
+            "posicao": 2,
+            "original": "",
+            "novo": "coluna_2"
+          },
+          {
+            "posicao": 3,
+            "original": "",
+            "novo": "coluna_3"
+          },
+          {
+            "posicao": 4,
+            "original": "",
+            "novo": "coluna_4"
+          },
+          {
+            "posicao": 5,
+            "original": "",
+            "novo": "coluna_5"
+          },
+          {
+            "posicao": 6,
+            "original": "",
+            "novo": "coluna_6"
+          },
+          {
+            "posicao": 7,
+            "original": "",
+            "novo": "coluna_7"
+          },
+          {
+            "posicao": 8,
+            "original": "",
+            "novo": "coluna_8"
+          },
+          {
+            "posicao": 9,
+            "original": "",
+            "novo": "coluna_9"
+          },
+          {
+            "posicao": 10,
+            "original": "",
+            "novo": "coluna_10"
+          },
+          {
+            "posicao": 14,
+            "original": "",
+            "novo": "coluna_14"
+          }
+        ],
+        "colunas_suspeitas": [
+          "coluna_1",
+          "coluna_2",
+          "coluna_3",
+          "coluna_4",
+          "coluna_5",
+          "coluna_6",
+          "coluna_7",
+          "coluna_8",
+          "coluna_9",
+          "coluna_10",
+          "coluna_14"
+        ],
+        "colunas_muitos_nulos": {
+          "coluna_9": 98.49,
+          "coluna_10": 99.89,
+          "coluna_14": 99.97
+        }
+      },
+      "pipeline_finalizado": true,
+      "erro_pipeline_antes": "TypeError: keys must be str, int, float, bool or None, not datetime",
+      "resumo_identico": false,
+      "valores_preservados": true,
+      "kpis_depois": {
+        "faturamento_total": null,
+        "lucro_total": null,
+        "custo_total": null,
+        "margem_lucro": null,
+        "ticket_medio": null,
+        "quantidade_pedidos": null,
+        "quantidade_vendida": null
+      }
+    },
+    "vendas_tratadas.csv": {
+      "antes": {
+        "linhas": 3295,
+        "colunas": 9,
+        "nomes": [
+          "Pedido",
+          "Data",
+          "Total_custo",
+          "Valor_liquido",
+          "Forma_pagamento",
+          "Cliente",
+          "Lucro",
+          "Percentual_lucro",
+          "Status"
+        ]
+      },
+      "depois": {
+        "linhas": 3295,
+        "colunas": 9,
+        "nomes": [
+          "Pedido",
+          "Data",
+          "Total_custo",
+          "Valor_liquido",
+          "Forma_pagamento",
+          "Cliente",
+          "Lucro",
+          "Percentual_lucro",
+          "Status"
+        ]
+      },
+      "ingestao": {
+        "arquivo": "vendas_tratadas.csv",
+        "cabecalho_detectado": true,
+        "linha_cabecalho": 1,
+        "confianca_cabecalho": 93.33,
+        "linhas_anteriores_cabecalho": 0,
+        "linhas_vazias_removidas": 0,
+        "encoding": "utf-8-sig",
+        "separador": ";",
+        "colunas_vazias_removidas": 0,
+        "colunas_renomeadas": [],
+        "colunas_suspeitas": [],
+        "colunas_muitos_nulos": {}
+      },
+      "pipeline_finalizado": true,
+      "erro_pipeline_antes": null,
+      "resumo_identico": true,
+      "valores_preservados": true,
+      "kpis_depois": {
+        "faturamento_total": 2778601.77,
+        "lucro_total": 1075124.74,
+        "custo_total": 2842340.75,
+        "margem_lucro": 38.69,
+        "ticket_medio": 855.48,
+        "quantidade_pedidos": 3248,
+        "quantidade_vendida": null
+      }
+    }
+  }
+}

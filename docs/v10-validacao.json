@@ -1,0 +1,767 @@
+{
+  "vendas_tratadas.csv": {
+    "http": 200,
+    "dados": {
+      "arquivos": [
+        {
+          "nome": "vendas_tratadas.csv",
+          "linhas": 3385,
+          "colunas": 11
+        }
+      ],
+      "quantidade_arquivos": 1,
+      "status": "concluida",
+      "escopo": "Tabela analítica após ingestão estrutural e antes do ETL.",
+      "quantidade_linhas": 3385,
+      "quantidade_colunas": 11,
+      "linhas_duplicadas": 6,
+      "total_valores_nulos": 10629,
+      "percentual_nulos_geral": 28.55,
+      "quantidade_problemas": 15,
+      "score_qualidade": 51.28,
+      "classificacao_qualidade": "atencao",
+      "problemas": [
+        {
+          "tipo": "duplicidade",
+          "severidade": "media",
+          "mensagem": "6 linhas duplicadas encontradas.",
+          "nivel": "media"
+        },
+        {
+          "tipo": "tipo_incorreto",
+          "coluna": "coluna_1",
+          "severidade": "media",
+          "mensagem": "A coluna 'coluna_1' está como str, mas parece ser numérica com confiança de 98.26%.",
+          "nivel": "media"
+        },
+        {
+          "tipo": "tipo_incorreto",
+          "coluna": "coluna_3",
+          "severidade": "media",
+          "mensagem": "A coluna 'coluna_3' está como str, mas parece ser numérica com confiança de 99.58%.",
+          "nivel": "media"
+        },
+        {
+          "tipo": "tipo_incorreto",
+          "coluna": "coluna_4",
+          "severidade": "media",
+          "mensagem": "A coluna 'coluna_4' está como str, mas parece ser numérica com confiança de 99.73%.",
+          "nivel": "media"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_1",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_1' possui 54 valores nulos (1.6%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_2",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_2' possui 90 valores nulos (2.66%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_3",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_3' possui 16 valores nulos (0.47%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_4",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_4' possui 69 valores nulos (2.04%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_5",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_5' possui 84 valores nulos (2.48%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_6",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_6' possui 76 valores nulos (2.25%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_7",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_7' possui 47 valores nulos (1.39%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_8",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_8' possui 97 valores nulos (2.87%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_9",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_9' possui 3332 valores nulos (98.43%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_10",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_10' possui 3380 valores nulos (99.85%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_14",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_14' possui 3384 valores nulos (99.97%).",
+          "nivel": "baixa"
+        }
+      ],
+      "transformacoes": [
+        {
+          "tipo": "conversao_numerica_cancelada",
+          "coluna": "coluna_1",
+          "antes": "str",
+          "depois": "str",
+          "descricao": "A conversão geraria 58 novos valores nulos."
+        },
+        {
+          "tipo": "conversao_numerica_cancelada",
+          "coluna": "coluna_3",
+          "antes": "str",
+          "depois": "str",
+          "descricao": "A conversão geraria 14 novos valores nulos."
+        },
+        {
+          "tipo": "conversao_numerica_cancelada",
+          "coluna": "coluna_4",
+          "antes": "str",
+          "depois": "str",
+          "descricao": "A conversão geraria 9 novos valores nulos."
+        }
+      ],
+      "ingestao": {
+        "arquivo": "vendas_tratadas.csv",
+        "cabecalho_detectado": true,
+        "linha_cabecalho": 1,
+        "confianca_cabecalho": 75.91,
+        "linhas_anteriores_cabecalho": 0,
+        "linhas_vazias_removidas": 0,
+        "encoding": "utf-8-sig",
+        "separador": ";",
+        "colunas_vazias_removidas": 0,
+        "colunas_renomeadas": [],
+        "colunas_suspeitas": [],
+        "colunas_muitos_nulos": {
+          "coluna_9": 98.43,
+          "coluna_10": 99.88,
+          "coluna_14": 99.97
+        }
+      }
+    },
+    "kpis": {
+      "faturamento_total": null,
+      "lucro_total": null,
+      "custo_total": null,
+      "margem_lucro": null,
+      "ticket_medio": null,
+      "quantidade_pedidos": null,
+      "quantidade_vendida": null
+    }
+  },
+  "PLANILHA VITOR.xlsx": {
+    "http": 200,
+    "dados": {
+      "arquivos": [
+        {
+          "nome": "PLANILHA VITOR.xlsx",
+          "linhas": 3385,
+          "colunas": 11
+        }
+      ],
+      "quantidade_arquivos": 1,
+      "status": "concluida",
+      "escopo": "Tabela analítica após ingestão estrutural e antes do ETL.",
+      "quantidade_linhas": 3385,
+      "quantidade_colunas": 11,
+      "linhas_duplicadas": 6,
+      "total_valores_nulos": 10629,
+      "percentual_nulos_geral": 28.55,
+      "quantidade_problemas": 15,
+      "score_qualidade": 38.28,
+      "classificacao_qualidade": "critica",
+      "problemas": [
+        {
+          "tipo": "duplicidade",
+          "severidade": "media",
+          "mensagem": "6 linhas duplicadas encontradas.",
+          "nivel": "media"
+        },
+        {
+          "tipo": "tipo_incorreto",
+          "coluna": "coluna_1",
+          "severidade": "media",
+          "mensagem": "A coluna 'coluna_1' está como object, mas parece ser numérica com confiança de 98.26%.",
+          "nivel": "media"
+        },
+        {
+          "tipo": "tipo_incorreto",
+          "coluna": "coluna_3",
+          "severidade": "media",
+          "mensagem": "A coluna 'coluna_3' está como object, mas parece ser numérica com confiança de 99.58%.",
+          "nivel": "media"
+        },
+        {
+          "tipo": "tipo_incorreto",
+          "coluna": "coluna_4",
+          "severidade": "media",
+          "mensagem": "A coluna 'coluna_4' está como object, mas parece ser numérica com confiança de 99.73%.",
+          "nivel": "media"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_1",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_1' possui 54 valores nulos (1.6%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_2",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_2' possui 90 valores nulos (2.66%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_3",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_3' possui 16 valores nulos (0.47%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_4",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_4' possui 69 valores nulos (2.04%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_5",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_5' possui 84 valores nulos (2.48%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_6",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_6' possui 76 valores nulos (2.25%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_7",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_7' possui 47 valores nulos (1.39%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_8",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_8' possui 97 valores nulos (2.87%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_9",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_9' possui 3332 valores nulos (98.43%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_10",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_10' possui 3380 valores nulos (99.85%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "coluna_14",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'coluna_14' possui 3384 valores nulos (99.97%).",
+          "nivel": "baixa"
+        }
+      ],
+      "transformacoes": [
+        {
+          "tipo": "conversao_numerica_cancelada",
+          "coluna": "coluna_1",
+          "antes": "object",
+          "depois": "object",
+          "descricao": "A conversão geraria 58 novos valores nulos."
+        },
+        {
+          "tipo": "conversao_numerica_cancelada",
+          "coluna": "coluna_3",
+          "antes": "object",
+          "depois": "object",
+          "descricao": "A conversão geraria 14 novos valores nulos."
+        },
+        {
+          "tipo": "conversao_numerica_cancelada",
+          "coluna": "coluna_4",
+          "antes": "object",
+          "depois": "object",
+          "descricao": "A conversão geraria 9 novos valores nulos."
+        }
+      ],
+      "ingestao": {
+        "arquivo": "PLANILHA VITOR.xlsx",
+        "cabecalho_detectado": false,
+        "linha_cabecalho": null,
+        "confianca_cabecalho": 0.0,
+        "linhas_anteriores_cabecalho": 0,
+        "linhas_vazias_removidas": 124,
+        "colunas_vazias_removidas": 3,
+        "colunas_renomeadas": [
+          {
+            "posicao": 1,
+            "original": "",
+            "novo": "coluna_1"
+          },
+          {
+            "posicao": 2,
+            "original": "",
+            "novo": "coluna_2"
+          },
+          {
+            "posicao": 3,
+            "original": "",
+            "novo": "coluna_3"
+          },
+          {
+            "posicao": 4,
+            "original": "",
+            "novo": "coluna_4"
+          },
+          {
+            "posicao": 5,
+            "original": "",
+            "novo": "coluna_5"
+          },
+          {
+            "posicao": 6,
+            "original": "",
+            "novo": "coluna_6"
+          },
+          {
+            "posicao": 7,
+            "original": "",
+            "novo": "coluna_7"
+          },
+          {
+            "posicao": 8,
+            "original": "",
+            "novo": "coluna_8"
+          },
+          {
+            "posicao": 9,
+            "original": "",
+            "novo": "coluna_9"
+          },
+          {
+            "posicao": 10,
+            "original": "",
+            "novo": "coluna_10"
+          },
+          {
+            "posicao": 14,
+            "original": "",
+            "novo": "coluna_14"
+          }
+        ],
+        "colunas_suspeitas": [],
+        "colunas_muitos_nulos": {
+          "coluna_9": 98.49,
+          "coluna_10": 99.89,
+          "coluna_14": 99.97
+        }
+      }
+    },
+    "kpis": {
+      "faturamento_total": null,
+      "lucro_total": null,
+      "custo_total": null,
+      "margem_lucro": null,
+      "ticket_medio": null,
+      "quantidade_pedidos": null,
+      "quantidade_vendida": null
+    }
+  },
+  "multitabela": {
+    "resumo_anterior_preservado": true,
+    "dados": {
+      "arquivos": [
+        {
+          "nome": "Avaliacoes.csv",
+          "linhas": 10000,
+          "colunas": 3
+        },
+        {
+          "nome": "Campanhas.csv",
+          "linhas": 1999,
+          "colunas": 8
+        },
+        {
+          "nome": "Clientes.csv",
+          "linhas": 1000,
+          "colunas": 8
+        },
+        {
+          "nome": "Colaboradores.csv",
+          "linhas": 500,
+          "colunas": 9
+        },
+        {
+          "nome": "Custos_Operacionais.csv",
+          "linhas": 100,
+          "colunas": 5
+        },
+        {
+          "nome": "Devolucoes.csv",
+          "linhas": 1000,
+          "colunas": 7
+        },
+        {
+          "nome": "Fornecedores.csv",
+          "linhas": 100,
+          "colunas": 7
+        },
+        {
+          "nome": "Historico_Vendas.csv",
+          "linhas": 10000,
+          "colunas": 9
+        },
+        {
+          "nome": "Lojas.csv",
+          "linhas": 5,
+          "colunas": 5
+        },
+        {
+          "nome": "Pedidos_Compra.csv",
+          "linhas": 1000,
+          "colunas": 5
+        },
+        {
+          "nome": "Produtos.csv",
+          "linhas": 1000,
+          "colunas": 9
+        },
+        {
+          "nome": "Satisfacao.csv",
+          "linhas": 1000,
+          "colunas": 5
+        },
+        {
+          "nome": "Stock.csv",
+          "linhas": 1000,
+          "colunas": 5
+        },
+        {
+          "nome": "Vendas.csv",
+          "linhas": 20000,
+          "colunas": 9
+        }
+      ],
+      "quantidade_arquivos": 14,
+      "status": "concluida",
+      "escopo": "Tabela analítica após ingestão estrutural e antes do ETL.",
+      "quantidade_linhas": 20000,
+      "quantidade_colunas": 48,
+      "linhas_duplicadas": 0,
+      "total_valores_nulos": 49032,
+      "percentual_nulos_geral": 5.11,
+      "quantidade_problemas": 8,
+      "score_qualidade": 89.89,
+      "classificacao_qualidade": "boa",
+      "problemas": [
+        {
+          "tipo": "tipo_incorreto",
+          "coluna": "Data da Venda",
+          "severidade": "media",
+          "mensagem": "A coluna 'Data da Venda' está como str, mas parece ser datetime com confiança de 100.0%.",
+          "nivel": "media"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "Estoque_Atual",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'Estoque_Atual' possui 6951 valores nulos (34.76%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "Estoque_Minimo",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'Estoque_Minimo' possui 6951 valores nulos (34.76%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "Estoque_Maximo",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'Estoque_Maximo' possui 6951 valores nulos (34.76%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "Tempo_Medio_Entrega_Dias",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'Tempo_Medio_Entrega_Dias' possui 6951 valores nulos (34.76%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "Risco_Ruptura",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'Risco_Ruptura' possui 6951 valores nulos (34.76%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "Estoque_Excessivo",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'Estoque_Excessivo' possui 6951 valores nulos (34.76%).",
+          "nivel": "baixa"
+        },
+        {
+          "tipo": "valor_nulo",
+          "coluna": "Principal_Motivo_Devolucao",
+          "severidade": "baixa",
+          "mensagem": "A coluna 'Principal_Motivo_Devolucao' possui 7326 valores nulos (36.63%).",
+          "nivel": "baixa"
+        }
+      ],
+      "transformacoes": [
+        {
+          "tipo": "conversao_data",
+          "coluna": "Data da Venda",
+          "antes": "str",
+          "depois": "datetime64[us]",
+          "descricao": "Conversão realizada com sucesso."
+        }
+      ],
+      "ingestao": {
+        "Avaliacoes": {
+          "arquivo": "Avaliacoes.csv",
+          "cabecalho_detectado": true,
+          "linha_cabecalho": 1,
+          "confianca_cabecalho": 85.83,
+          "linhas_anteriores_cabecalho": 0,
+          "linhas_vazias_removidas": 0,
+          "encoding": "utf-8-sig",
+          "separador": ",",
+          "colunas_vazias_removidas": 0,
+          "colunas_renomeadas": [],
+          "colunas_suspeitas": [],
+          "colunas_muitos_nulos": {}
+        },
+        "Campanhas": {
+          "arquivo": "Campanhas.csv",
+          "cabecalho_detectado": true,
+          "linha_cabecalho": 1,
+          "confianca_cabecalho": 95.0,
+          "linhas_anteriores_cabecalho": 0,
+          "linhas_vazias_removidas": 0,
+          "encoding": "utf-8-sig",
+          "separador": ",",
+          "colunas_vazias_removidas": 0,
+          "colunas_renomeadas": [],
+          "colunas_suspeitas": [],
+          "colunas_muitos_nulos": {}
+        },
+        "Clientes": {
+          "arquivo": "Clientes.csv",
+          "cabecalho_detectado": true,
+          "linha_cabecalho": 1,
+          "confianca_cabecalho": 90.0,
+          "linhas_anteriores_cabecalho": 0,
+          "linhas_vazias_removidas": 0,
+          "encoding": "utf-8-sig",
+          "separador": ",",
+          "colunas_vazias_removidas": 0,
+          "colunas_renomeadas": [],
+          "colunas_suspeitas": [],
+          "colunas_muitos_nulos": {}
+        },
+        "Colaboradores": {
+          "arquivo": "Colaboradores.csv",
+          "cabecalho_detectado": true,
+          "linha_cabecalho": 1,
+          "confianca_cabecalho": 93.33,
+          "linhas_anteriores_cabecalho": 0,
+          "linhas_vazias_removidas": 0,
+          "encoding": "utf-8-sig",
+          "separador": ",",
+          "colunas_vazias_removidas": 0,
+          "colunas_renomeadas": [],
+          "colunas_suspeitas": [],
+          "colunas_muitos_nulos": {}
+        },
+        "Custos_Operacionais": {
+          "arquivo": "Custos_Operacionais.csv",
+          "cabecalho_detectado": true,
+          "linha_cabecalho": 1,
+          "confianca_cabecalho": 96.0,
+          "linhas_anteriores_cabecalho": 0,
+          "linhas_vazias_removidas": 0,
+          "encoding": "utf-8-sig",
+          "separador": ",",
+          "colunas_vazias_removidas": 0,
+          "colunas_renomeadas": [],
+          "colunas_suspeitas": [],
+          "colunas_muitos_nulos": {}
+        },
+        "Devolucoes": {
+          "arquivo": "Devolucoes.csv",
+          "cabecalho_detectado": true,
+          "linha_cabecalho": 1,
+          "confianca_cabecalho": 97.14,
+          "linhas_anteriores_cabecalho": 0,
+          "linhas_vazias_removidas": 0,
+          "encoding": "utf-8-sig",
+          "separador": ",",
+          "colunas_vazias_removidas": 0,
+          "colunas_renomeadas": [],
+          "colunas_suspeitas": [],
+          "colunas_muitos_nulos": {}
+        },
+        "Fornecedores": {
+          "arquivo": "Fornecedores.csv",
+          "cabecalho_detectado": true,
+          "linha_cabecalho": 1,
+          "confianca_cabecalho": 94.29,
+          "linhas_anteriores_cabecalho": 0,
+          "linhas_vazias_removidas": 0,
+          "encoding": "utf-8-sig",
+          "separador": ",",
+          "colunas_vazias_removidas": 0,
+          "colunas_renomeadas": [],
+          "colunas_suspeitas": [],
+          "colunas_muitos_nulos": {}
+        },
+        "Historico_Vendas": {
+          "arquivo": "Historico_Vendas.csv",
+          "cabecalho_detectado": true,
+          "linha_cabecalho": 1,
+          "confianca_cabecalho": 97.78,
+          "linhas_anteriores_cabecalho": 0,
+          "linhas_vazias_removidas": 0,
+          "encoding": "utf-8-sig",
+          "separador": ",",
+          "colunas_vazias_removidas": 0,
+          "colunas_renomeadas": [],
+          "colunas_suspeitas": [],
+          "colunas_muitos_nulos": {}
+        },
+        "Lojas": {
+          "arquivo": "Lojas.csv",
+          "cabecalho_detectado": true,
+          "linha_cabecalho": 1,
+          "confianca_cabecalho": 84.0,
+          "linhas_anteriores_cabecalho": 0,
+          "linhas_vazias_removidas": 0,
+          "encoding": "utf-8-sig",
+          "separador": ",",
+          "colunas_vazias_removidas": 0,
+          "colunas_renomeadas": [],
+          "colunas_suspeitas": [],
+          "colunas_muitos_nulos": {}
+        },
+        "Pedidos_Compra": {
+          "arquivo": "Pedidos_Compra.csv",
+          "cabecalho_detectado": true,
+          "linha_cabecalho": 1,
+          "confianca_cabecalho": 100.0,
+          "linhas_anteriores_cabecalho": 0,
+          "linhas_vazias_removidas": 0,
+          "encoding": "utf-8-sig",
+          "separador": ",",
+          "colunas_vazias_removidas": 0,
+          "colunas_renomeadas": [],
+          "colunas_suspeitas": [],
+          "colunas_muitos_nulos": {}
+        },
+        "Produtos": {
+          "arquivo": "Produtos.csv",
+          "cabecalho_detectado": true,
+          "linha_cabecalho": 1,
+          "confianca_cabecalho": 89.78,
+          "linhas_anteriores_cabecalho": 0,
+          "linhas_vazias_removidas": 0,
+          "encoding": "utf-8-sig",
+          "separador": ",",
+          "colunas_vazias_removidas": 0,
+          "colunas_renomeadas": [],
+          "colunas_suspeitas": [],
+          "colunas_muitos_nulos": {}
+        },
+        "Satisfacao": {
+          "arquivo": "Satisfacao.csv",
+          "cabecalho_detectado": true,
+          "linha_cabecalho": 1,
+          "confianca_cabecalho": 96.0,
+          "linhas_anteriores_cabecalho": 0,
+          "linhas_vazias_removidas": 0,
+          "encoding": "utf-8-sig",
+          "separador": ",",
+          "colunas_vazias_removidas": 0,
+          "colunas_renomeadas": [],
+          "colunas_suspeitas": [],
+          "colunas_muitos_nulos": {}
+        },
+        "Stock": {
+          "arquivo": "Stock.csv",
+          "cabecalho_detectado": true,
+          "linha_cabecalho": 1,
+          "confianca_cabecalho": 100.0,
+          "linhas_anteriores_cabecalho": 0,
+          "linhas_vazias_removidas": 0,
+          "encoding": "utf-8-sig",
+          "separador": ",",
+          "colunas_vazias_removidas": 0,
+          "colunas_renomeadas": [],
+          "colunas_suspeitas": [],
+          "colunas_muitos_nulos": {}
+        },
+        "Vendas": {
+          "arquivo": "Vendas.csv",
+          "cabecalho_detectado": true,
+          "linha_cabecalho": 1,
+          "confianca_cabecalho": 97.78,
+          "linhas_anteriores_cabecalho": 0,
+          "linhas_vazias_removidas": 0,
+          "encoding": "utf-8-sig",
+          "separador": ",",
+          "colunas_vazias_removidas": 0,
+          "colunas_renomeadas": [],
+          "colunas_suspeitas": [],
+          "colunas_muitos_nulos": {}
+        }
+      }
+    }
+  }
+}
