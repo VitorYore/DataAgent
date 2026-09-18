@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Outlet } from 'react-router'
 import { Header } from './Header'
 import { Sidebar } from './Sidebar'
+import { HistoricalAnalysisNotice } from '../common/HistoricalAnalysisNotice'
 
 export function AppLayout() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -12,7 +13,7 @@ export function AppLayout() {
       <Sidebar open={menuOpen} onNavigate={() => setMenuOpen(false)} />
       <div className="min-w-0 flex-1">
         <div className="hidden md:block"><Header menuOpen={menuOpen} onMenuToggle={() => setMenuOpen(!menuOpen)} /></div>
-        <main id="main-content" tabIndex={-1} className="mx-auto max-w-7xl px-5 py-8 sm:p-8 lg:p-12"><Outlet /></main>
+        <main id="main-content" tabIndex={-1} className="mx-auto max-w-7xl px-5 py-8 sm:p-8 lg:p-12"><HistoricalAnalysisNotice /><Outlet /></main>
       </div>
     </div>
   )

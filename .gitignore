@@ -33,6 +33,7 @@ Thumbs.db
 
 # DataAgent temporary uploads
 data/uploads/
+data/analysis_history/
 
 # Validation temporary folders
 .validation-*/

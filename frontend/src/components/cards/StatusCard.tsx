@@ -4,7 +4,8 @@ import { formatInteger } from '../../utils/formatters'
 
 export function StatusCard({ status }: { status: GeneralStatus }) {
   // Tradução visual do rótulo recebido, sem classificar pelo score.
-  const label = status.status === 'critico' ? 'Crítico' : status.status
+  const label = status.status === 'critico' ? 'Crítico' : status.status ?? 'Não calculado'
+  const calculated = status.score != null
   return (
     <article className="rounded-xl border border-line bg-surface p-5 sm:p-6">
       <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
@@ -13,7 +14,7 @@ export function StatusCard({ status }: { status: GeneralStatus }) {
             <ShieldAlert aria-hidden="true" className="size-5" strokeWidth={1.75} />
             <h3>Nível de atenção</h3>
           </div>
-          <p className="mt-4 text-3xl font-semibold tabular-nums">{formatInteger(status.score)} <span className="text-lg font-normal text-muted">/ 100</span></p>
+          <p className="mt-4 text-3xl font-semibold tabular-nums">{calculated ? <>{formatInteger(status.score)} <span className="text-lg font-normal text-muted">/ 100</span></> : "Não calculado"}</p>
           <p className="mt-3 text-sm">Status: <span className="font-medium">{label}</span></p>
           <p className="mt-3 text-xs leading-5 text-muted">Indicador de atenção da análise, não uma nota da empresa.</p>
         </div>

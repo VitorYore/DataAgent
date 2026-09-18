@@ -12,6 +12,7 @@ from pprint import pprint
 # ========================================
 
 from src.ingestion.loader import carregar_dados
+from src.ingestion.report_normalizer import StructuralReviewRequired
 
 from src.ingestion.multi_loader import (
     encontrar_arquivos,
@@ -124,6 +125,11 @@ from src.analytics.insights import (
 
 from src.analytics.derived_metrics import (
     criar_metricas_derivadas
+)
+from src.analytics.assisted_mapping import (
+    SemanticMappingRequired,
+    aplicar_mapeamento_completo,
+    precisa_mapeamento,
 )
 
 
@@ -576,7 +582,10 @@ def executar_pipeline_analitico(
     df,
     origem: str,
     diretorio_saida: Path = ROOT,
-    arquivos_analisados: list | None = None
+    arquivos_analisados: list | None = None,
+    analysis_id: str | None = None,
+    semantic_mappings: dict | None = None,
+    automatic_mappings: dict | None = None,
 ):
 
     print(
@@ -593,23 +602,38 @@ def executar_pipeline_analitico(
         f"Colunas: {len(df.columns)}"
     )
 
+    ingestion_metadata = df.attrs.get('ingestao')
+    if arquivos_analisados is None:
+        arquivos_analisados = [{'nome': origem, 'linhas': len(df), 'colunas': len(df.columns)}]
+    mapeamento_auditoria = []
+    if semantic_mappings is None:
+        required, detected, candidates, automatic = precisa_mapeamento(df)
+        if required:
+            raise SemanticMappingRequired(df.copy(), detected, candidates, automatic, arquivos_analisados)
+    else:
+        df, mapeamento_auditoria = aplicar_mapeamento_completo(
+            df, automatic_mappings or {}, semantic_mappings
+        )
+
     # ========================================
     # 1. DIAGNÓSTICO
     # ========================================
 
+    if ingestion_metadata is not None:
+        df.attrs['ingestao'] = ingestion_metadata
+
     diagnostico = gerar_diagnostico(
         df
     )
-    if arquivos_analisados is None:
-        arquivos_analisados = [{'nome': origem, 'linhas': len(df), 'colunas': len(df.columns)}]
-
     print(
         "\n=== DIAGNÓSTICO DOS DADOS ===\n"
     )
 
     pprint(
-        diagnostico
+        {chave: valor for chave, valor in diagnostico.items() if chave != 'ingestao'}
     )
+    if 'ingestao' in diagnostico:
+        print('Auditoria de ingestão preservada no relatório de diagnóstico; conteúdo por linha omitido do terminal.')
 
     # ========================================
     # 2. PROBLEMAS
@@ -667,6 +691,13 @@ def executar_pipeline_analitico(
         df,
         diagnostico
     )
+    logs_etl.extend({
+        'coluna': item['coluna'],
+        'tipo_transformacao': item['tipo'],
+        'antes': 'sem significado confirmado',
+        'depois': item['conceito'],
+        'detalhes': item['descricao'],
+    } for item in mapeamento_auditoria)
 
     print(
         "=== TRANSFORMAÇÕES REALIZADAS ===\n"
@@ -880,6 +911,26 @@ def executar_pipeline_analitico(
         df_analise
     )
 
+    from src.analytics.temporal_quality import analisar_anomalias_temporais
+    coluna_data_analitica = next(
+        (coluna for coluna, item in mapeamento.items() if item.get("papel") == "data"),
+        None,
+    )
+    perfil_temporal = analisar_anomalias_temporais(df_analise, coluna_data_analitica)
+    df_temporal = df_analise.loc[perfil_temporal["mask"]].copy()
+    if coluna_data_analitica:
+        import pandas as pd
+        df_temporal[coluna_data_analitica] = pd.to_datetime(
+            df_temporal[coluna_data_analitica],
+            errors="coerce",
+            format="mixed",
+            dayfirst=True,
+        )
+    if perfil_temporal.get("quantidade"):
+        diagnostico["anomalias_temporais"] = {
+            chave: valor for chave, valor in perfil_temporal.items() if chave != "mask"
+        }
+
     print(
         "\n=== MAPEAMENTO DAS COLUNAS ===\n"
     )
@@ -930,8 +981,16 @@ def executar_pipeline_analitico(
     # ========================================
 
     analise_mensal = analisar_meses(
-        df_analise
+        df_temporal
     )
+    if "erro" not in analise_mensal and perfil_temporal.get("quantidade"):
+        analise_mensal["anomalias_temporais"] = {
+            chave: valor for chave, valor in perfil_temporal.items() if chave != "mask"
+        }
+        analise_mensal["periodo_analitico"] = {
+            "inicio": min(analise_mensal["valores_mensais"]),
+            "fim": max(analise_mensal["valores_mensais"]),
+        }
 
     print(
         "\n=== ANÁLISE MENSAL ===\n"
@@ -960,15 +1019,15 @@ def executar_pipeline_analitico(
         print(
             f"Melhor mês: "
             f"{melhor_mes['periodo']} | "
-            f"Faturamento: "
-            f"{melhor_mes['faturamento']}"
+            f"{analise_mensal.get('nome_metrica', 'Faturamento')}: "
+            f"{melhor_mes.get('valor', melhor_mes.get('faturamento'))}"
         )
 
         print(
             f"Pior mês: "
             f"{pior_mes['periodo']} | "
-            f"Faturamento: "
-            f"{pior_mes['faturamento']}"
+            f"{analise_mensal.get('nome_metrica', 'Faturamento')}: "
+            f"{pior_mes.get('valor', pior_mes.get('faturamento'))}"
         )
 
         print(
@@ -976,9 +1035,7 @@ def executar_pipeline_analitico(
         )
 
         for periodo, valor in (
-            analise_mensal[
-                "faturamento_mensal"
-            ].items()
+            analise_mensal.get("valores_mensais", analise_mensal.get("faturamento_mensal", {})).items()
         ):
 
             print(
@@ -1030,8 +1087,8 @@ def executar_pipeline_analitico(
                     f"{periodo['periodo']} | "
                     f"Registros: "
                     f"{periodo['registros']} | "
-                    f"Faturamento: "
-                    f"{periodo['faturamento']}"
+                    f"{periodo.get('nome_metrica', analise_mensal.get('nome_metrica', 'Faturamento'))}: "
+                    f"{periodo.get('valor', periodo.get('faturamento'))}"
                 )
 
     # ========================================
@@ -1186,7 +1243,8 @@ def executar_pipeline_analitico(
     # ========================================
 
     desempenho = analisar_desempenho(
-        df_analise
+        df_analise,
+        dados_temporais=df_temporal,
     )
 
     print(
@@ -1300,7 +1358,7 @@ def executar_pipeline_analitico(
     # ========================================
 
     crescimento = analisar_crescimento(
-        df_analise
+        df_temporal
     )
 
     print(
@@ -1899,9 +1957,47 @@ def executar_pipeline_analitico(
         )
     )
 
-    resumo_executivo['dados'] = gerar_qualidade_dados(
-        diagnostico, problemas, logs_etl, arquivos_analisados
+    kpis_resumo = resumo_executivo.get('kpis', {})
+    saude_negocio_suficiente = any(kpis_resumo.get(chave) is not None for chave in (
+        'faturamento_total', 'lucro_total', 'custo_total', 'margem_lucro'
+    ))
+    possui_metrica_util = any(valor is not None for chave, valor in kpis_resumo.items()
+                              if chave not in {'quantidade_registros', 'quantidade_pedidos'})
+    resumo_executivo['suficiencia_analitica'] = (
+        'suficiente' if saude_negocio_suficiente else 'parcial' if possui_metrica_util else 'insuficiente'
     )
+    if not saude_negocio_suficiente:
+        resumo_executivo['status_geral'] = {'score': None, 'status': None, 'motivos': []}
+
+    resumo_executivo['dados'] = gerar_qualidade_dados(
+        diagnostico, problemas, logs_etl, arquivos_analisados,
+        dataframe=df_analise, mapeamento=mapeamento,
+    )
+    mapping_origins = {}
+    ingestion_meta = diagnostico.get('ingestao', df.attrs.get('ingestao', {}))
+    ingestion_structures = [ingestion_meta] if isinstance(ingestion_meta, dict) else []
+    if isinstance(ingestion_meta, dict):
+        ingestion_structures.extend(value for value in ingestion_meta.values() if isinstance(value, dict))
+    for structure in ingestion_structures:
+        normalization = structure.get('normalizacao', {})
+        for header in normalization.get('evidencias_cabecalho_tardio', []):
+            for item in header.get('colunas', []):
+                column = f"coluna_{item.get('posicao')}"
+                if header.get('validado') and item.get('mapeamento_permitido') and column in (automatic_mappings or {}):
+                    mapping_origins[column] = {
+                        'origem': header.get('origem', 'cabecalho_posterior'),
+                        'confianca': round(float(item.get('confianca', 0)) / 100, 2),
+                    }
+    for column in automatic_mappings or {}:
+        mapping_origins.setdefault(column, {'origem': 'conteudo', 'confianca': None})
+    for column in semantic_mappings or {}:
+        mapping_origins[column] = {'origem': 'usuario', 'confianca': 1.0}
+    resumo_executivo['dados']['mapeamento_semantico'] = {
+        'automatico': automatic_mappings or {},
+        'confirmado_pelo_usuario': semantic_mappings or {},
+        'origens': mapping_origins,
+    }
+    resumo_executivo['analysis_id'] = analysis_id
     print(
         "\n=== RESUMO EXECUTIVO ===\n"
     )
@@ -2078,7 +2174,9 @@ def executar_pipeline_analitico(
 # =========================================================
 
 
-def executar_dataagent(diretorio_dados=ROOT / "data/samples", diretorio_saida=ROOT, estrito=False):
+def executar_dataagent(diretorio_dados=ROOT / "data/samples", diretorio_saida=ROOT, estrito=False,
+                       analysis_id=None, semantic_mappings=None, automatic_mappings=None,
+                       arquivos_analisados=None):
     """Pipeline compartilhado por CLI e API; não captura stdout para retornar dados."""
     # Preserva os logs UTF-8 também quando chamado pelo Uvicorn no Windows.
     if hasattr(sys.stdout, "reconfigure"):
@@ -2111,7 +2209,8 @@ def executar_dataagent(diretorio_dados=ROOT / "data/samples", diretorio_saida=RO
         # 2. ARQUIVO ÚNICO
         # ========================================
 
-        if quantidade_arquivos == 1:
+        tabelas = carregar_multiplas_tabelas(diretorio_dados, estrito=estrito)
+        if len(tabelas) == 1:
 
             print(
                 "\n=== MODO ARQUIVO ÚNICO ===\n"
@@ -2123,7 +2222,7 @@ def executar_dataagent(diretorio_dados=ROOT / "data/samples", diretorio_saida=RO
             )
 
             try:
-                df = carregar_dados(arquivos[0])
+                df = next(iter(tabelas.values()))
             except Exception as erro:
                 raise ValueError("Não foi possível ler o arquivo enviado.") from erro
             if df.empty:
@@ -2132,7 +2231,11 @@ def executar_dataagent(diretorio_dados=ROOT / "data/samples", diretorio_saida=RO
             return executar_pipeline_analitico(
                 df,
                 origem=arquivos[0].name,
-                diretorio_saida=diretorio_saida
+                diretorio_saida=diretorio_saida,
+                arquivos_analisados=arquivos_analisados,
+                analysis_id=analysis_id,
+                semantic_mappings=semantic_mappings,
+                automatic_mappings=automatic_mappings,
             )
 
         # ========================================
@@ -2157,9 +2260,7 @@ def executar_dataagent(diretorio_dados=ROOT / "data/samples", diretorio_saida=RO
         # 4. CARREGAR TABELAS
         # ========================================
 
-        tabelas = (
-            carregar_multiplas_tabelas(diretorio_dados, estrito=estrito)
-        )
+        # As regiões de todos os arquivos já foram inspecionadas acima.
 
         exibir_resumo_tabelas(
             tabelas
@@ -2194,6 +2295,12 @@ def executar_dataagent(diretorio_dados=ROOT / "data/samples", diretorio_saida=RO
         )
 
         if not relacionamentos:
+
+            if quantidade_arquivos == 1 and len(tabelas) > 1:
+                raise StructuralReviewRequired({
+                    'motivo': 'Foram separadas tabelas independentes sem relacionamento confiável. Revise quais regiões devem participar da análise.',
+                    'tabelas': {nome: tabela.attrs.get('ingestao', {}) for nome, tabela in tabelas.items()},
+                })
 
             print(
                 "\nNão foi possível construir "
@@ -2277,7 +2384,7 @@ def executar_dataagent(diretorio_dados=ROOT / "data/samples", diretorio_saida=RO
         }
         return executar_pipeline_analitico(
             df_enriquecido,
-            arquivos_analisados=[
+            arquivos_analisados=arquivos_analisados or [
                 {'nome': tabela.attrs.get('ingestao', {}).get('arquivo', nome),
                  'linhas': len(tabela), 'colunas': len(tabela.columns)}
                 for nome, tabela in tabelas.items()
@@ -2287,7 +2394,10 @@ def executar_dataagent(diretorio_dados=ROOT / "data/samples", diretorio_saida=RO
                 "enriquecido baseado em "
                 f"{tabela_principal}"
             ),
-            diretorio_saida=diretorio_saida
+            diretorio_saida=diretorio_saida,
+            analysis_id=analysis_id,
+            semantic_mappings=semantic_mappings,
+            automatic_mappings=automatic_mappings,
         )
 
     except FileNotFoundError as erro:

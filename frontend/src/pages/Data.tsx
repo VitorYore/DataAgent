@@ -8,6 +8,8 @@ import { formatInteger } from '../utils/formatters'
 import { ExecutiveSummaryPage } from '../components/common/ExecutiveSummaryPage'
 import { DataQualityPanel } from '../components/common/DataQualityPanel'
 import { EmptyState } from '../components/common/EmptyState'
+import { AnalysisHistoryPanel } from '../components/common/AnalysisHistoryPanel'
+import { SemanticMappingPanel } from '../components/common/SemanticMappingPanel'
 
 interface SelectedFile {
   id: string
@@ -15,7 +17,7 @@ interface SelectedFile {
 }
 
 export default function Data() {
-  const { analyzeFiles, processing } = useAnalysis()
+  const { analyzeFiles, processing, mappingRequest, confirmMapping, error: contextError } = useAnalysis()
   const navigate = useNavigate()
   const input = useRef<HTMLInputElement>(null)
   const [files, setFiles] = useState<SelectedFile[]>([])
@@ -35,17 +37,23 @@ export default function Data() {
     if (processing) return
     setAnalysisMessage('')
     try {
-      await analyzeFiles(files.map(({ file }) => file))
-      navigate('/')
+      const completed = await analyzeFiles(files.map(({ file }) => file))
+      if (completed) navigate('/')
     } catch (error: unknown) {
       setAnalysisMessage(error instanceof Error ? error.message : 'Não foi possível conectar ao backend.')
     }
+  }
+
+  async function handleConfirmMapping(mappings: Record<string, string>) {
+    await confirmMapping(mappings)
+    navigate('/')
   }
 
   return (
     <>
       <SectionHeader title="Dados" description="Selecione os arquivos que serão utilizados na análise." />
       <div className="space-y-8">
+        {mappingRequest && <SemanticMappingPanel request={mappingRequest} processing={processing} error={contextError} onConfirm={handleConfirmMapping} />}
         <div className="flex items-start gap-3 rounded-xl border border-line bg-surface p-5 text-sm leading-6 text-muted">
           <Info aria-hidden="true" className="mt-0.5 size-5 shrink-0" />
           <p id="connection-notice">Envie os arquivos desta análise juntos. O DataAgent processará somente este conjunto, sem incluir arquivos de análises anteriores.</p>
@@ -94,6 +102,7 @@ export default function Data() {
             ? <DataQualityPanel data={summary.dados} />
             : <EmptyState title="Qualidade não disponível" description="Esta análise não contém informações de qualidade. Execute uma nova análise para gerar o diagnóstico." />}
         </ExecutiveSummaryPage>
+        <AnalysisHistoryPanel />
       </div>
     </>
   )

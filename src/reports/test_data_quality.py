@@ -16,7 +16,7 @@ from main import executar_dataagent, executar_pipeline_analitico
 class DataQualityTests(unittest.TestCase):
     def quality(self, df):
         d = gerar_diagnostico(df)
-        return gerar_qualidade_dados(d, gerar_problemas(df, d), [], [{'nome': 'teste', 'linhas': len(df), 'colunas': len(df.columns)}])
+        return gerar_qualidade_dados(d, gerar_problemas(df, d), [], [{'nome': 'teste', 'linhas': len(df), 'colunas': len(df.columns)}], dataframe=df)
 
     def test_sem_problemas(self):
         q = self.quality(pd.DataFrame({'valor': [1, 2]}))
@@ -52,6 +52,46 @@ class DataQualityTests(unittest.TestCase):
         self.assertEqual(q['transformacoes'][0]['descricao'], log['detalhes'])
         self.assertEqual(q['transformacoes'][0]['antes'], 'str')
         self.assertNotIn('timestamp', q['transformacoes'][0])
+
+    def test_coerencia_financeira_reconcilia_com_tolerancia_de_centavos(self):
+        from src.reports.data_quality import auditar_coerencia_financeira
+        df = pd.DataFrame({
+            'Valor_liquido': [100.009, 120.0],
+            'Total_custo': [60.0, 70.0],
+            'Lucro': [40.0, 50.0],
+        })
+        audit = auditar_coerencia_financeira(df)
+        self.assertEqual(audit['status'], 'coerente')
+        self.assertEqual(audit['linhas_reconciliadas'], 2)
+        self.assertEqual(audit['percentual_reconciliado'], 100.0)
+
+    def test_coerencia_financeira_informa_cobertura_e_issue_sem_alterar_kpis(self):
+        from src.analytics.business import calcular_kpis
+        from src.reports.data_quality import auditar_coerencia_financeira
+        df = pd.DataFrame({
+            'Valor_liquido': [100.0, 100.0, 200.0],
+            'Total_custo': [90.0, None, 150.0],
+            'Lucro': [20.0, 10.0, None],
+        })
+        audit = auditar_coerencia_financeira(df)
+        self.assertEqual(audit['faturamento']['linhas_validas'], 3)
+        self.assertEqual(audit['custo']['nulos'], 1)
+        self.assertEqual(audit['lucro']['nulos'], 1)
+        self.assertEqual(audit['linhas_com_tres_metricas'], 1)
+        self.assertEqual(audit['percentual_reconciliado'], 0.0)
+        self.assertEqual(audit['erro_mediano_absoluto'], 10.0)
+        original_kpis = calcular_kpis(df)
+        report = self.quality(df)
+        self.assertEqual(report['coerencia_metricas']['status'], 'inconsistente')
+        issue = next(item for item in report['problemas'] if item.get('tipo') == 'incoerencia_metricas_financeiras')
+        self.assertEqual(issue['nivel'], 'media')
+        self.assertEqual(original_kpis['faturamento_total'], 400.0)
+        self.assertEqual(original_kpis['custo_total'], 240.0)
+        self.assertEqual(original_kpis['lucro_total'], 30.0)
+
+    def test_metricas_semanticas_ausentes_nao_geram_auditoria(self):
+        from src.reports.data_quality import auditar_coerencia_financeira
+        self.assertIsNone(auditar_coerencia_financeira(pd.DataFrame({'Valor_Total': [5.0]})))
 
     def test_tabela_vazia_sem_score_inventado(self):
         q = self.quality(pd.DataFrame({'valor': pd.Series(dtype=float)}))

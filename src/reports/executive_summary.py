@@ -1,5 +1,8 @@
 from src.analytics.insight_engine import para_relatorio, organizar_listas
+from src.analytics.growth import avaliar_evolucao_total
 from typing import Any
+
+import pandas as pd
 
 
 # =========================================================
@@ -95,6 +98,13 @@ def gerar_resumo_kpis(
             )
         ),
 
+        "quantidade_registros": kpis.get("quantidade_registros"),
+        "valor_total": formatar_valor(kpis.get("valor_total")),
+        "valor_com_desconto": formatar_valor(kpis.get("valor_com_desconto")),
+        "margem_bruta": formatar_valor(kpis.get("margem_bruta")),
+        "margem_bruta_percentual": formatar_valor(kpis.get("margem_bruta_percentual")),
+        "margem_bruta_percentual_metodo": kpis.get("margem_bruta_percentual_metodo"),
+
         "quantidade_vendida": (
             formatar_valor(
                 kpis.get(
@@ -114,101 +124,24 @@ def gerar_serie_temporal(
     analise_mensal: dict,
     desempenho: dict
 ) -> list:
-
-    """
-    Constrói uma série temporal consolidada para o frontend.
-
-    Usa:
-    - faturamento_mensal
-    - lucro_mensal
-
-    Exemplo:
-
-    [
-        {
-            "periodo": "2022-01",
-            "faturamento": 100000,
-            "lucro": 80000
-        }
-    ]
-    """
-
-    if (
-        not analise_mensal
-        or "erro" in analise_mensal
-    ):
-
+    """Retorna série da métrica temporal escolhida sem renomeá-la como faturamento."""
+    if not analise_mensal or "erro" in analise_mensal:
         return []
-
-    faturamento_mensal = (
-        analise_mensal.get(
-            "faturamento_mensal",
-            {}
-        )
-    )
-
-    lucro_mensal = {}
-
-    if (
-        desempenho
-        and "erro" not in desempenho
-    ):
-
-        lucro_mensal = (
-            desempenho.get(
-                "lucro_mensal",
-                {}
-            )
-        )
-
-    periodos = sorted(
-        set(
-            faturamento_mensal.keys()
-        ).union(
-            lucro_mensal.keys()
-        )
-    )
-
+    valores = analise_mensal.get("valores_mensais", analise_mensal.get("faturamento_mensal", {}))
+    nome = analise_mensal.get("nome_metrica", "Faturamento")
     serie = []
-
-    for periodo in periodos:
-
-        item = {
-            "periodo": periodo
-        }
-
-        faturamento = (
-            faturamento_mensal.get(
-                periodo
-            )
-        )
-
-        lucro = (
-            lucro_mensal.get(
-                periodo
-            )
-        )
-
-        if faturamento is not None:
-
-            item[
-                "faturamento"
-            ] = formatar_valor(
-                faturamento
-            )
-
-        if lucro is not None:
-
-            item[
-                "lucro"
-            ] = formatar_valor(
-                lucro
-            )
-
-        serie.append(
-            item
-        )
-
+    for periodo, valor in valores.items():
+        item = {"periodo": periodo, "metrica_valor": formatar_valor(valor), "nome_metrica": nome}
+        if analise_mensal.get("metrica") == "faturamento" or "metrica" not in analise_mensal:
+            item["faturamento"] = formatar_valor(valor)
+        serie.append(item)
+    if analise_mensal.get("metrica") in (None, "faturamento") and desempenho and "erro" not in desempenho:
+        lucros = desempenho.get("lucro_mensal", {})
+        by_period = {item["periodo"]: item for item in serie}
+        for periodo, lucro in lucros.items():
+            item = by_period.setdefault(periodo, {"periodo": periodo})
+            item["lucro"] = formatar_valor(lucro)
+        serie = [by_period[key] for key in sorted(by_period)]
     return serie
 
 
@@ -224,6 +157,31 @@ def gerar_resumo_temporal(
 ) -> dict:
 
     resultado = {}
+
+    if analise_mensal and "erro" not in analise_mensal:
+        metrica = analise_mensal.get("metrica", "faturamento")
+        nome_metrica = analise_mensal.get("nome_metrica", "Faturamento")
+        resultado["metrica_principal"] = metrica
+        resultado["nome_metrica_principal"] = nome_metrica
+        valores = analise_mensal.get("valores_mensais", analise_mensal.get("faturamento_mensal", {}))
+        if len(valores) >= 2:
+            periodos_ordenados = sorted(valores)
+            serie = [valores[periodo] for periodo in periodos_ordenados]
+            avaliacao = avaliar_evolucao_total(pd.Series(serie))
+            primeiro, ultimo = serie[0], serie[-1]
+            resultado["periodo_evolucao"] = {
+                "inicio": periodos_ordenados[0], "fim": periodos_ordenados[-1],
+                "valor_inicial": formatar_valor(primeiro), "valor_final": formatar_valor(ultimo),
+            }
+            resultado["evolucao_variacao_absoluta"] = avaliacao["variacao_absoluta"]
+            resultado["evolucao_motivo"] = avaliacao["motivo"]
+            resultado["evolucao_metrica"] = avaliacao["variacao_percentual"]
+            if avaliacao["variacao_percentual"] is not None:
+                resultado["tendencia_metrica"] = (
+                    "alta" if avaliacao["variacao_percentual"] > 0
+                    else "queda" if avaliacao["variacao_percentual"] < 0
+                    else "estavel"
+                )
 
     if (
         analise_mensal
@@ -254,13 +212,10 @@ def gerar_resumo_temporal(
                     )
                 ),
 
-                "faturamento": (
-                    formatar_valor(
-                        melhor.get(
-                            "faturamento"
-                        )
-                    )
-                )
+                "valor": formatar_valor(melhor.get("valor", melhor.get("faturamento"))),
+                "metrica": analise_mensal.get("metrica", "faturamento"),
+                "nome_metrica": analise_mensal.get("nome_metrica", "Faturamento"),
+                **({"faturamento": formatar_valor(melhor.get("faturamento", melhor.get("valor")))} if analise_mensal.get("metrica", "faturamento") == "faturamento" else {})
             }
 
         if pior:
@@ -274,13 +229,10 @@ def gerar_resumo_temporal(
                     )
                 ),
 
-                "faturamento": (
-                    formatar_valor(
-                        pior.get(
-                            "faturamento"
-                        )
-                    )
-                )
+                "valor": formatar_valor(pior.get("valor", pior.get("faturamento"))),
+                "metrica": analise_mensal.get("metrica", "faturamento"),
+                "nome_metrica": analise_mensal.get("nome_metrica", "Faturamento"),
+                **({"faturamento": formatar_valor(pior.get("faturamento", pior.get("valor")))} if analise_mensal.get("metrica", "faturamento") == "faturamento" else {})
             }
 
     # =========================================
@@ -373,12 +325,23 @@ def gerar_resumo_temporal(
     # NOVA SÉRIE PARA O FRONT
     # =========================================
 
-    resultado[
-        "serie_temporal"
-    ] = gerar_serie_temporal(
-        analise_mensal,
-        desempenho
-    )
+    resultado["serie_temporal"] = gerar_serie_temporal(analise_mensal, desempenho)
+    if analise_mensal and "erro" not in analise_mensal:
+        periods = sorted(analise_mensal.get("valores_mensais", {}))
+        if periods:
+            resultado["periodo_analitico"] = {"inicio": periods[0], "fim": periods[-1]}
+        if analise_mensal.get("anomalias_temporais"):
+            resultado["anomalias_temporais"] = analise_mensal["anomalias_temporais"]
+        if "evolucao_total" in analise_mensal:
+            resultado["evolucao_metrica"] = analise_mensal.get("evolucao_total")
+            resultado["evolucao_motivo"] = analise_mensal.get("evolucao_motivo")
+            resultado["evolucao_variacao_absoluta"] = analise_mensal.get("evolucao_variacao_absoluta")
+            if analise_mensal.get("evolucao_total") is not None:
+                resultado["tendencia_metrica"] = (
+                    "alta" if analise_mensal["evolucao_total"] > 0
+                    else "queda" if analise_mensal["evolucao_total"] < 0
+                    else "estavel"
+                )
 
     return resultado
 
@@ -405,6 +368,7 @@ def gerar_resumo_clientes(
         "clientes_resultado_negativo": analise_clientes.get("clientes_resultado_negativo"),
         "ranking_faturamento": analise_clientes.get("ranking_faturamento", []),
         "ranking_lucro": analise_clientes.get("ranking_lucro", []),
+        "ranking_valor_total": analise_clientes.get("ranking_valor_total", []),
         "insights_clientes": analise_clientes.get("insights_clientes", []),
         "quantidade_clientes": (
             analise_clientes.get(
@@ -418,6 +382,13 @@ def gerar_resumo_clientes(
             "maior_faturamento"
         )
     )
+
+    maior_valor_total = analise_clientes.get("maior_valor_total")
+    if maior_valor_total:
+        resultado["cliente_maior_valor_total"] = {
+            "cliente": maior_valor_total.get("cliente"),
+            "valor_total": formatar_valor(maior_valor_total.get("valor_total")),
+        }
 
     maior_lucro = (
         analise_clientes.get(
@@ -467,13 +438,21 @@ def gerar_resumo_clientes(
 
     resultado[
         "concentracao_top_5"
-    ] = (
-        formatar_valor(
-            analise_clientes.get(
-                "concentracao_top_5"
-            )
-        )
-    )
+    ] = formatar_valor(analise_clientes.get("concentracao_top_5"))
+    for campo in (
+        "metrica_principal", "participacao_maior_cliente_metrica",
+        "concentracao_top_5_metrica", "rankings", "maior_valor_total",
+        "maior_valor_com_desconto", "maior_margem_bruta",
+        "clientes_metrica_negativa", "clientes_margem_bruta_negativa",
+    ):
+        if campo in analise_clientes:
+            resultado[campo] = analise_clientes[campo]
+    if analise_clientes.get("maior_margem_bruta"):
+        lider = analise_clientes["maior_margem_bruta"]
+        resultado["cliente_maior_margem_bruta"] = {
+            "cliente": lider.get("cliente"),
+            "margem_bruta": formatar_valor(lider.get("margem_bruta", lider.get("valor"))),
+        }
 
     return resultado
 

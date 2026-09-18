@@ -1,0 +1,108 @@
+{
+  "execucoes": [
+    {
+      "files": 1,
+      "status": 200,
+      "seconds": 0.292
+    },
+    {
+      "files": 14,
+      "status": 200,
+      "seconds": 8.28
+    }
+  ],
+  "historico": [
+    {
+      "id": "analysis_20260909_175249896432_66fbe181c8234283ac9aa091047343b2",
+      "data_analise": "2026-09-09T17:52:49.896432+00:00",
+      "arquivos": [
+        "Avaliacoes.csv",
+        "Campanhas.csv",
+        "Clientes.csv",
+        "Colaboradores.csv",
+        "Custos_Operacionais.csv",
+        "Devolucoes.csv",
+        "Fornecedores.csv",
+        "Historico_Vendas.csv",
+        "Lojas.csv",
+        "Pedidos_Compra.csv",
+        "Produtos.csv",
+        "Satisfacao.csv",
+        "Stock.csv",
+        "Vendas.csv"
+      ],
+      "kpis": {
+        "faturamento_total": 505159249.56,
+        "lucro_total": 474743291.13,
+        "custo_total": 30415958.43,
+        "margem_lucro": 93.98,
+        "ticket_medio": 25257.96,
+        "quantidade_pedidos": 20000,
+        "quantidade_vendida": 1009021.0
+      },
+      "score": 85,
+      "status": "saudavel"
+    },
+    {
+      "id": "analysis_20260909_175241618357_4a50461335d44a08ab413566c1747f09",
+      "data_analise": "2026-09-09T17:52:41.618357+00:00",
+      "arquivos": [
+        "vendas.xlsx"
+      ],
+      "kpis": {
+        "faturamento_total": 300.0,
+        "lucro_total": 220.0,
+        "custo_total": 80.0,
+        "margem_lucro": 73.33,
+        "ticket_medio": 150.0,
+        "quantidade_pedidos": 2,
+        "quantidade_vendida": 3.0
+      },
+      "score": 100,
+      "status": "saudavel"
+    }
+  ],
+  "comparacao": {
+    "status": "disponivel",
+    "analise_atual": "analysis_20260909_175249896432_66fbe181c8234283ac9aa091047343b2",
+    "analise_anterior": "analysis_20260909_175241618357_4a50461335d44a08ab413566c1747f09",
+    "metricas": {
+      "faturamento_total": {
+        "atual": 505159249.56,
+        "anterior": 300.0,
+        "variacao_percentual": 168386316.52
+      },
+      "lucro_total": {
+        "atual": 474743291.13,
+        "anterior": 220.0,
+        "variacao_percentual": 215792305.06
+      },
+      "custo_total": {
+        "atual": 30415958.43,
+        "anterior": 80.0,
+        "variacao_percentual": 38019848.04
+      },
+      "margem_lucro": {
+        "atual": 93.98,
+        "anterior": 73.33,
+        "variacao_pontos_percentuais": 20.65
+      },
+      "ticket_medio": {
+        "atual": 25257.96,
+        "anterior": 150.0,
+        "variacao_percentual": 16738.64
+      },
+      "quantidade_pedidos": {
+        "atual": 20000,
+        "anterior": 2,
+        "variacao_percentual": 999900.0
+      },
+      "quantidade_vendida": {
+        "atual": 1009021.0,
+        "anterior": 3.0,
+        "variacao_percentual": 33633933.33
+      }
+    }
+  },
+  "persistencia_apos_reiniciar": true
+}

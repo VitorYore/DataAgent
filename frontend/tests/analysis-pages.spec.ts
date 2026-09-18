@@ -1,9 +1,10 @@
 import { expect, test } from './fixtures'
+import { resumoExecutivo } from '../src/mocks/resumoExecutivo'
 
 const pages = [
   { path: '/performance', title: 'Desempenho', cards: 13 },
   { path: '/products', title: 'Produtos', cards: 6 },
-  { path: '/customers', title: 'Clientes', cards: 5 },
+  { path: '/customers', title: 'Clientes', cards: 3 },
 ]
 const viewports = [
   { name: 'desktop', width: 1440, height: 900 },
@@ -51,9 +52,9 @@ for (const viewport of viewports) {
         await expect(page.getByRole('table')).toBeVisible()
       } else {
         await expect(card('Quantidade de clientes')).toContainText('1.000')
-        await expect(card('Cliente com maior faturamento')).toContainText('Kyara Santos (ID 874)')
-        await expect(card('Cliente com maior faturamento')).toContainText('R$ 1.086.012,31')
-        await expect(card('Cliente com maior lucro')).toContainText('R$ 1.023.409,47')
+        await expect(card('Cliente com maior Faturamento')).toContainText('Kyara Santos (ID 874)')
+        await expect(card('Cliente com maior Faturamento')).toContainText('R$ 1.086.012,31')
+        await expect(card('Cliente com maior Lucro')).toContainText('R$ 1.023.409,47')
         await expect(page.getByRole('meter')).toHaveAttribute('aria-valuenow', '1.03')
         await expect(page.getByRole('meter')).toHaveAttribute('aria-valuetext', '1,03%')
         await expect(page.getByRole('meter').locator('div')).toHaveAttribute('style', 'width: 1.03%;')
@@ -73,20 +74,17 @@ for (const viewport of viewports) {
   }
 }
 
-test('carregamento e recuperação de erro do serviço', async ({ page }) => {
-  await page.route('**/src/services/dataAgentService.ts', (route) => route.fulfill({
-    contentType: 'application/javascript',
-    body: 'export async function analyzeDatasets() { throw new Error("Unavailable") } export function getExecutiveSummary() { return new Promise(() => {}) }',
-  }))
+test('carregamento e recupera????o de erro do servi??o', async ({ page }) => {
+  await page.route('**/api/analysis/latest', () => new Promise<void>(() => {}))
   await page.goto('/performance')
-  await expect(page.getByRole('status')).toContainText('Carregando análise')
-  await page.unroute('**/src/services/dataAgentService.ts')
-  await page.route('**/src/services/dataAgentService.ts', (route) => route.fulfill({
-    contentType: 'application/javascript',
-    body: 'export async function analyzeDatasets() { throw new Error("Unavailable") } let calls = 0; export async function getExecutiveSummary() { if (++calls <= 1) throw new Error("test"); const { resumoExecutivo } = await import("/src/mocks/resumoExecutivo.ts"); return structuredClone(resumoExecutivo) }',
-  }))
+  await expect(page.getByRole('status')).toContainText('Carregando')
+  await page.unroute('**/api/analysis/latest')
+  let calls = 0
+  await page.route('**/api/analysis/latest', (route) => ++calls === 1
+    ? route.fulfill({ status: 500, json: { detail: 'test' } })
+    : route.fulfill({ json: resumoExecutivo }))
   await page.reload()
-  await expect(page.getByRole('alert')).toContainText('Não foi possível carregar a análise')
+  await expect(page.getByRole('alert')).toContainText('HTTP 500')
   await page.getByRole('button', { name: 'Tentar novamente' }).click()
   await expect(page.locator('article')).toHaveCount(13)
 })

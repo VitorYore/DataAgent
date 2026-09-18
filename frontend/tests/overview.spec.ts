@@ -39,10 +39,7 @@ test('Overview exibe listas vazias e preserva indicadores zerados', async ({ pag
   summary.principais_insights = []
   summary.status_geral.motivos = []
   summary.kpis.faturamento_total = 0
-  await page.route('**/src/services/dataAgentService.ts', (route) => route.fulfill({
-    contentType: 'application/javascript',
-    body: `export async function analyzeDatasets() {} export async function getExecutiveSummary() { return ${JSON.stringify(summary)} }`,
-  }))
+  await page.route('**/api/analysis/latest', (route) => route.fulfill({ json: summary }))
   await page.goto('/')
   await expect(page.getByText('Nenhum risco informado')).toBeVisible()
   await expect(page.getByText('Nenhuma oportunidade informada')).toBeVisible()
@@ -52,28 +49,47 @@ test('Overview exibe listas vazias e preserva indicadores zerados', async ({ pag
 })
 
 test('Overview sem resumo', async ({ page }) => {
-  await page.route('**/src/services/dataAgentService.ts', (route) => route.fulfill({
-    contentType: 'application/javascript',
-    body: 'export async function analyzeDatasets() {} export async function getExecutiveSummary() { return null }',
-  }))
+  await page.route('**/api/analysis/latest', (route) => route.fulfill({ status: 404, json: { detail: 'Nenhuma an?lise dispon?vel' } }))
   await page.goto('/')
   await expect(page.getByText('Nenhuma análise disponível')).toBeVisible()
 })
 
-test('Overview carregando e recuperação após erro', async ({ page }) => {
-  await page.route('**/src/services/dataAgentService.ts', (route) => route.fulfill({
-    contentType: 'application/javascript',
-    body: 'export async function analyzeDatasets() {} export function getExecutiveSummary() { return new Promise(() => {}) }',
-  }))
+test('Overview carregando e recupera????o ap??s erro', async ({ page }) => {
+  await page.route('**/api/analysis/latest', () => new Promise<void>(() => {}))
   await page.goto('/')
-  await expect(page.getByRole('status')).toContainText('Carregando análise')
-  await page.unroute('**/src/services/dataAgentService.ts')
-  await page.route('**/src/services/dataAgentService.ts', (route) => route.fulfill({
-    contentType: 'application/javascript',
-    body: `export async function analyzeDatasets() {} let calls = 0; export async function getExecutiveSummary() { if (++calls <= 1) throw new Error('test'); return ${JSON.stringify(resumoExecutivo)} }`,
-  }))
+  await expect(page.getByRole('status')).toContainText('Carregando')
+  await page.unroute('**/api/analysis/latest')
+  let calls = 0
+  await page.route('**/api/analysis/latest', (route) => ++calls === 1
+    ? route.fulfill({ status: 500, json: { detail: 'test' } })
+    : route.fulfill({ json: resumoExecutivo }))
   await page.reload()
-  await expect(page.getByRole('alert')).toContainText('Não foi possível carregar a análise')
+  await expect(page.getByRole('alert')).toContainText('HTTP 500')
   await page.getByRole('button', { name: 'Tentar novamente' }).click()
   await expect(page.getByRole('region', { name: 'KPIs' })).toBeVisible()
+})
+
+
+test('Overview preserva UTF-8 e sinaliza evolucao com base inicial pequena', async ({ page }) => {
+  const summary = structuredClone(resumoExecutivo)
+  const period = 'per' + String.fromCharCode(237) + 'odo'
+  summary.temporal.metrica_principal = 'lucro'
+  summary.temporal.nome_metrica_principal = 'Lucro'
+  summary.temporal.evolucao_metrica = null
+  summary.temporal.evolucao_faturamento = null
+  summary.temporal.evolucao_motivo = 'base_muito_baixa'
+  summary.temporal.evolucao_variacao_absoluta = 64213.81
+  summary.temporal.tendencia_metrica = undefined
+  summary.temporal.tendencia_faturamento = undefined
+  summary.principais_insights = [{
+    tipo: 'positivo', categoria: 'melhor_periodo', prioridade: 'media',
+    mensagem: `O ${period} 2020-10 apresentou o maior valor de Lucro.`,
+  }]
+  await page.route('**/api/analysis/latest', route => route.fulfill({ json: summary }))
+  await page.goto('/')
+  await expect(page.getByText(`O ${period} 2020-10 apresentou o maior valor de Lucro.`, { exact: true })).toBeVisible()
+  const temporal = page.getByRole('region', { name: 'Desempenho', exact: true })
+  await expect(temporal).toContainText('Base inicial muito baixa')
+  await expect(temporal).toContainText('+R$ 64.213,81')
+  await expect(temporal).not.toContainText('167.006,01%')
 })

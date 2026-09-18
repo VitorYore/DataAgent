@@ -1,4 +1,4 @@
-import { BarChart3, Boxes, Database, LayoutDashboard, Lightbulb, Users } from 'lucide-react'
+import { BarChart3, Boxes, Database, History, LayoutDashboard, Lightbulb, Users } from 'lucide-react'
 import { NavLink } from 'react-router'
 
 const navigation = [
@@ -8,6 +8,7 @@ const navigation = [
   { to: '/customers', label: 'Clientes', icon: Users },
   { to: '/opportunities', label: 'Oportunidades', icon: Lightbulb },
   { to: '/data', label: 'Dados', icon: Database },
+  { to: '/history', label: 'Histórico', icon: History },
 ]
 
 export function Sidebar({ open, onNavigate }: { open: boolean; onNavigate: () => void }) {

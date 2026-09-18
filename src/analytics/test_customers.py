@@ -41,6 +41,14 @@ class CustomerAnalysisTests(unittest.TestCase):
         self.assertEqual(len(set(result["insights_clientes"])), 4)
         self.assertIn("57,14%", result["insights_clientes"][1])
 
+    def test_full_customer_view_keeps_both_revenue_and_profit_rankings(self):
+        result = analisar_clientes(self.data)
+        self.assertIn("faturamento", result["rankings"])
+        self.assertIn("lucro", result["rankings"])
+        self.assertEqual(len(result["rankings"]["faturamento"]["items"]), 3)
+        self.assertEqual(len(result["rankings"]["lucro"]["items"]), 3)
+        self.assertEqual(result["metrica_principal"], {"conceito": "faturamento", "label": "Faturamento", "coluna": "Faturamento"})
+
     def test_revenue_without_profit_and_without_id(self):
         result = analisar_clientes(self.data.drop(columns=["Lucro", "Cliente_ID"]))
         self.assertTrue(result["ranking_faturamento"])

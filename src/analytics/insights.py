@@ -54,20 +54,19 @@ def gerar_insights(
         )
 
         if melhor_mes:
-
-            adicionar_insight(
-                insights,
-                "positivo",
-                (
-                    f"O período "
-                    f"{melhor_mes['periodo']} apresentou "
-                    "o maior faturamento, totalizando "
-                    f"{melhor_mes['faturamento']}."
-                ),
-                'melhor_periodo',
-                "media",
-                valor=melhor_mes.get('faturamento'), periodo=melhor_mes.get('periodo'),
-            )
+            nome_metrica = analise_mensal.get("nome_metrica", "Faturamento")
+            valor_metrica = melhor_mes.get("valor", melhor_mes.get("faturamento"))
+            if valor_metrica is not None:
+                adicionar_insight(
+                    insights,
+                    "positivo",
+                    f"O período {melhor_mes['periodo']} apresentou o maior valor de {nome_metrica}, totalizando {valor_metrica}.",
+                    "melhor_periodo",
+                    "media",
+                    valor=valor_metrica,
+                    periodo=melhor_mes.get("periodo"),
+                    metrica=analise_mensal.get("metrica", "faturamento"),
+                )
 
         variacoes = analise_mensal.get(
             "variacao_mensal",

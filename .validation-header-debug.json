@@ -1,0 +1,305 @@
+{
+  "audit_headers": [
+    {
+      "linha": 3952,
+      "tipo": "vazia",
+      "confianca": 100,
+      "periodo_contexto": "ABRIL",
+      "valores": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "linha": 3953,
+      "tipo": "resumo",
+      "confianca": 100,
+      "periodo_contexto": "ABRIL",
+      "valores": [
+        null,
+        null,
+        30.518622518622518,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "linha": 3954,
+      "tipo": "vazia",
+      "confianca": 100,
+      "periodo_contexto": "ABRIL",
+      "valores": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "linha": 3955,
+      "tipo": "periodo",
+      "confianca": 100,
+      "periodo_contexto": "MAIO",
+      "valores": [
+        null,
+        null,
+        "MAIO",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "linha": 3956,
+      "tipo": "cabecalho",
+      "confianca": 100,
+      "periodo_contexto": "MAIO",
+      "valores": [
+        "PEDIDO",
+        "DATA ",
+        "VALOR TOTAL ",
+        "VALOR C/ DESCONTO",
+        "FORMA PAGAMENTO",
+        "CLIENTE ",
+        "MARGEM BRUTA",
+        "% MARGEM BRUTA",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "linha": 3957,
+      "tipo": "transacao",
+      "confianca": 100.0,
+      "periodo_contexto": "MAIO",
+      "datas_registro": [
+        "2018-04-25T00:00:00"
+      ]
+    },
+    {
+      "linha": 3958,
+      "tipo": "transacao",
+      "confianca": 100.0,
+      "periodo_contexto": "MAIO",
+      "datas_registro": [
+        "2018-04-25T00:00:00"
+      ]
+    },
+    {
+      "linha": 3959,
+      "tipo": "transacao",
+      "confianca": 100.0,
+      "periodo_contexto": "MAIO",
+      "datas_registro": [
+        "2018-04-25T00:00:00"
+      ]
+    },
+    {
+      "linha": 3960,
+      "tipo": "transacao",
+      "confianca": 100.0,
+      "periodo_contexto": "MAIO",
+      "datas_registro": [
+        "2018-04-25T00:00:00"
+      ]
+    },
+    {
+      "linha": 3961,
+      "tipo": "transacao",
+      "confianca": 100.0,
+      "periodo_contexto": "MAIO",
+      "datas_registro": [
+        "2018-04-25T00:00:00"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "linha": 3956,
+      "cabecalho_repetido": false,
+      "linhas_transacionais_anteriores": 3631,
+      "linhas_transacionais_posteriores": 8164,
+      "compatibilidade_estrutural": 88.28,
+      "validado": true,
+      "origem": "cabecalho_posterior",
+      "colunas": [
+        {
+          "posicao": 1,
+          "rotulo": "PEDIDO",
+          "tipo_antes": "N",
+          "tipo_depois": "N",
+          "opcional_na_regiao_anterior": false,
+          "taxa_tipo_antes": 0.9801,
+          "taxa_tipo_depois": 0.9919,
+          "compativel": true,
+          "mapeamento_permitido": true,
+          "confianca": 96.0
+        },
+        {
+          "posicao": 2,
+          "rotulo": "DATA ",
+          "tipo_antes": "D",
+          "tipo_depois": "D",
+          "opcional_na_regiao_anterior": false,
+          "taxa_tipo_antes": 0.9997,
+          "taxa_tipo_depois": 0.9998,
+          "compativel": true,
+          "mapeamento_permitido": true,
+          "confianca": 96.0
+        },
+        {
+          "posicao": 3,
+          "rotulo": "VALOR TOTAL ",
+          "tipo_antes": "N",
+          "tipo_depois": "N",
+          "opcional_na_regiao_anterior": false,
+          "taxa_tipo_antes": 1.0,
+          "taxa_tipo_depois": 1.0,
+          "compativel": true,
+          "mapeamento_permitido": true,
+          "confianca": 96.0
+        },
+        {
+          "posicao": 4,
+          "rotulo": "VALOR C/ DESCONTO",
+          "tipo_antes": "T",
+          "tipo_depois": "N",
+          "opcional_na_regiao_anterior": false,
+          "taxa_tipo_antes": 1.0,
+          "taxa_tipo_depois": 1.0,
+          "compativel": false,
+          "mapeamento_permitido": false,
+          "confianca": 0.0
+        },
+        {
+          "posicao": 5,
+          "rotulo": "FORMA PAGAMENTO",
+          "tipo_antes": "T",
+          "tipo_depois": "T",
+          "opcional_na_regiao_anterior": false,
+          "taxa_tipo_antes": 1.0,
+          "taxa_tipo_depois": 1.0,
+          "compativel": true,
+          "mapeamento_permitido": true,
+          "confianca": 96.0
+        },
+        {
+          "posicao": 6,
+          "rotulo": "CLIENTE ",
+          "tipo_antes": "T",
+          "tipo_depois": "T",
+          "opcional_na_regiao_anterior": false,
+          "taxa_tipo_antes": 1.0,
+          "taxa_tipo_depois": 1.0,
+          "compativel": true,
+          "mapeamento_permitido": true,
+          "confianca": 96.0
+        },
+        {
+          "posicao": 7,
+          "rotulo": "MARGEM BRUTA",
+          "tipo_antes": "N",
+          "tipo_depois": "N",
+          "opcional_na_regiao_anterior": false,
+          "taxa_tipo_antes": 1.0,
+          "taxa_tipo_depois": 1.0,
+          "compativel": true,
+          "mapeamento_permitido": true,
+          "confianca": 96.0
+        },
+        {
+          "posicao": 8,
+          "rotulo": "% MARGEM BRUTA",
+          "tipo_antes": "N",
+          "tipo_depois": "N",
+          "opcional_na_regiao_anterior": false,
+          "taxa_tipo_antes": 0.965,
+          "taxa_tipo_depois": 0.9914,
+          "compativel": true,
+          "mapeamento_permitido": true,
+          "confianca": 96.0
+        },
+        {
+          "posicao": 9,
+          "rotulo": null,
+          "tipo_antes": "T",
+          "tipo_depois": "T",
+          "opcional_na_regiao_anterior": false,
+          "taxa_tipo_antes": 1.0,
+          "taxa_tipo_depois": 1.0,
+          "compativel": true,
+          "mapeamento_permitido": true,
+          "confianca": 96.0
+        },
+        {
+          "posicao": 10,
+          "rotulo": null,
+          "tipo_antes": null,
+          "tipo_depois": "T",
+          "opcional_na_regiao_anterior": true,
+          "taxa_tipo_antes": 1.0,
+          "taxa_tipo_depois": 1.0,
+          "compativel": true,
+          "mapeamento_permitido": true,
+          "confianca": 96.0
+        },
+        {
+          "posicao": 14,
+          "rotulo": null,
+          "tipo_antes": null,
+          "tipo_depois": "T",
+          "opcional_na_regiao_anterior": true,
+          "taxa_tipo_antes": 1.0,
+          "taxa_tipo_depois": 1.0,
+          "compativel": true,
+          "mapeamento_permitido": true,
+          "confianca": 96.0
+        }
+      ]
+    }
+  ],
+  "formulas_count": 9027
+}

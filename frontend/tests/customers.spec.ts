@@ -28,8 +28,8 @@ for (const width of [1440, 768, 320]) {
     page.on('pageerror', (error) => errors.push(error.message))
     await page.route('**/api/analysis/latest', (route) => route.fulfill({ json: { ...resumoExecutivo, clientes: customers } }))
     await page.goto('/customers')
-    const revenue = page.getByRole('table', { name: 'Ranking de clientes por faturamento', exact: true })
-    const profit = page.getByRole('table', { name: 'Ranking de clientes por lucro', exact: true })
+    const revenue = page.getByRole('table', { name: /^Ranking de clientes por faturamento$/i })
+    const profit = page.getByRole('table', { name: /^Ranking de clientes por lucro$/i })
     await expect(revenue.locator('tbody tr').first()).toContainText('Mesmo Nome (ID 123)')
     await expect(revenue.locator('tbody tr').first()).toContainText('R$ 400,00')
     await expect(profit.locator('tbody tr').first()).toContainText('Mesmo Nome (ID 456)')
@@ -39,7 +39,7 @@ for (const width of [1440, 768, 320]) {
     await expect(page.getByText(resumoExecutivo.principais_insights[0].mensagem)).toHaveCount(0)
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
     if (width === 320) {
-      const scroll = page.getByRole('region', { name: 'Ranking de clientes por faturamento', exact: true })
+      const scroll = page.getByRole('region', { name: /^Ranking de clientes por faturamento$/i })
       expect(await scroll.evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(true)
       await scroll.evaluate((element) => { element.scrollLeft = element.scrollWidth })
     }
@@ -55,8 +55,7 @@ test('clientes: relatório antigo e bloco vazio permanecem seguros', async ({ pa
     await expect(page.getByText('Ranking por faturamento indisponível')).toBeVisible()
     await expect(page.getByText('Ranking por lucro indisponível')).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Insights da carteira' })).toHaveCount(0)
-    const newCard = page.getByRole('article').filter({ has: page.getByRole('heading', { name: 'Clientes com resultado negativo', exact: true }) })
-    await expect(newCard).toContainText('Não disponível')
+    await expect(page.getByRole('heading', { name: /Clientes com .* negativo/i })).toHaveCount(0)
     await page.unroute('**/api/analysis/latest')
   }
 })
@@ -65,6 +64,7 @@ test('clientes: lucro indisponível não vira zero e não altera a ordem do rank
   const partial: CustomerSummary = {
     ...customers,
     clientes_resultado_negativo: null,
+    cliente_maior_lucro: undefined,
     ranking_lucro: [],
     ranking_faturamento: [
       { posicao: 7, cliente: 'Cliente recebido', faturamento: 130, lucro: null },
@@ -76,6 +76,49 @@ test('clientes: lucro indisponível não vira zero e não altera a ordem do rank
   await page.goto('/customers')
   const rows = page.getByRole('table').locator('tbody tr')
   await expect(rows.first().locator('td').first()).toHaveText('7')
-  await expect(rows.first()).toContainText('Não disponível')
-  await expect(page.getByText('Ranking por lucro indisponível')).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Cliente com maior Lucro', exact: true })).toHaveCount(0)
+  await expect(page.getByText('Rankings indisponíveis')).toHaveCount(0)
+})
+
+test('clientes: usa Valor Total e Margem Bruta sem inventar faturamento ou lucro', async ({ page }) => {
+  const semantic: CustomerSummary = {
+    quantidade_clientes: 3325,
+    metrica_principal: { conceito: 'valor_total', label: 'Valor Total' },
+    participacao_maior_cliente_metrica: { conceito: 'valor_total', label: 'Valor Total' },
+    concentracao_top_5_metrica: { conceito: 'valor_total', label: 'Valor Total' },
+    participacao_maior_cliente: 7.47,
+    concentracao_top_5: 22.28,
+    rankings: {
+      valor_total: { conceito: 'valor_total', label: 'Valor Total', items: [{ posicao: 1, cliente: 'MINERAÇÃO CAIEIRAS', valor: 632033.34, conceito: 'valor_total' }] },
+      margem_bruta: { conceito: 'margem_bruta', label: 'Margem Bruta', items: [{ posicao: 1, cliente: 'MINERAÇÃO CAIEIRAS', valor: 200328.52, conceito: 'margem_bruta' }] },
+    },
+    cliente_maior_valor_total: { cliente: 'MINERAÇÃO CAIEIRAS', valor_total: 632033.34 },
+    cliente_maior_margem_bruta: { cliente: 'MINERAÇÃO CAIEIRAS', margem_bruta: 200328.52 },
+    clientes_metrica_negativa: { conceito: 'margem_bruta', label: 'Margem Bruta', quantidade: 3 },
+  }
+  await page.route('**/api/analysis/latest', (route) => route.fulfill({ json: { ...resumoExecutivo, clientes: semantic } }))
+  await page.goto('/customers')
+  await expect(page.getByRole('heading', { name: 'Cliente com maior Valor Total', exact: true })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Cliente com maior Margem Bruta', exact: true })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Clientes com Margem Bruta negativa', exact: true })).toBeVisible()
+  await expect(page.getByText('do Valor Total')).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Cliente com maior Faturamento', exact: true })).toHaveCount(0)
+  await expect(page.getByRole('heading', { name: 'Cliente com maior Lucro', exact: true })).toHaveCount(0)
+})
+
+
+test('clientes: ranking semantico nao oculta ranking legado de outra metrica', async ({ page }) => {
+  const mixed: CustomerSummary = {
+    ...customers,
+    rankings: {
+      lucro: { conceito: 'lucro', label: 'Lucro', items: [{ posicao: 1, cliente: 'Cliente lucro', valor: 200, conceito: 'lucro' }] },
+    },
+    ranking_faturamento: [
+      { posicao: 1, cliente: 'Cliente faturamento', faturamento: 400, lucro: null },
+    ],
+  }
+  await page.route('**/api/analysis/latest', (route) => route.fulfill({ json: { ...resumoExecutivo, clientes: mixed } }))
+  await page.goto('/customers')
+  await expect(page.getByRole('table', { name: /^Ranking de clientes por Faturamento$/i })).toContainText('Cliente faturamento')
+  await expect(page.getByRole('table', { name: /^Ranking de clientes por Lucro$/i })).toContainText('Cliente lucro')
 })

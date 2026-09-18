@@ -29,6 +29,18 @@ REGRAS = {
         "agregacao": "sum"
     },
 
+    "valor_total": {
+        "palavras": ["valor_total", "valor_bruto"],
+        "tipo": "metrica",
+        "agregacao": "sum"
+    },
+
+    "valor_com_desconto": {
+        "palavras": ["valor_com_desconto", "valor_c_desconto", "valor_descontado"],
+        "tipo": "metrica",
+        "agregacao": "sum"
+    },
+
     "custo": {
         "palavras": [
             "custo_total",
@@ -60,6 +72,18 @@ REGRAS = {
         ],
         "tipo": "metrica",
         "agregacao": "sum"
+    },
+
+    "margem_bruta": {
+        "palavras": ["margem_bruta", "lucro_bruto"],
+        "tipo": "metrica",
+        "agregacao": "sum"
+    },
+
+    "margem_bruta_percentual": {
+        "palavras": ["margem_bruta_percentual", "percentual_margem_bruta"],
+        "tipo": "percentual",
+        "agregacao": None
     },
 
     "margem_lucro": {
@@ -407,7 +431,7 @@ REGRAS = {
 
 def normalizar_nome(nome: str) -> str:
 
-    nome = str(nome).lower().strip()
+    nome = str(nome).lower().strip().replace("%", " percentual ")
 
     nome = unicodedata.normalize(
         "NFKD",
@@ -429,6 +453,30 @@ def normalizar_nome(nome: str) -> str:
     )
 
     return nome.strip("_")
+
+
+def conceito_por_rotulo_cabecalho(rotulo: str, rotulos_contexto=None):
+    """Resolve somente rótulos explícitos e não ambíguos para conceitos semânticos."""
+    nome = normalizar_nome(rotulo)
+    aliases = {
+        "pedido": "pedido", "pedido_id": "pedido", "id_pedido": "pedido",
+        "data": "data", "data_venda": "data", "data_da_venda": "data",
+        "valor_total": "valor_total", "valor_bruto": "valor_total",
+        "valor_com_desconto": "valor_com_desconto", "valor_c_desconto": "valor_com_desconto",
+        "valor_descontado": "valor_com_desconto",
+        "margem_bruta": "margem_bruta", "lucro_bruto": "margem_bruta",
+        "margem_bruta_percentual": "margem_bruta_percentual",
+        "percentual_margem_bruta": "margem_bruta_percentual",
+        "forma_pagamento": "forma_pagamento", "forma_de_pagamento": "forma_pagamento",
+        "pagamento": "forma_pagamento", "meio_de_pagamento": "forma_pagamento",
+        "cliente": "cliente",
+    }
+    if nome == "valor_liquido":
+        contexto = {normalizar_nome(rotulo) for rotulo in (rotulos_contexto or [])}
+        return "valor_com_desconto" if any("desconto" in item for item in contexto) and "valor_total" in contexto else None
+    if nome == "total":
+        return None
+    return aliases.get(nome)
 
 
 def separar_contexto(
@@ -807,6 +855,10 @@ def calcular_score_tipo(
 
     papeis_numericos = [
         "faturamento",
+        "valor_total",
+        "valor_com_desconto",
+        "margem_bruta",
+        "margem_bruta_percentual",
         "custo",
         "custo_unitario",
         "lucro",

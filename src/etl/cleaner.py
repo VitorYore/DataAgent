@@ -15,44 +15,45 @@ def converter_colunas_numericas(
 
     for coluna in colunas:
         tipo_antes = str(df_tratado[coluna].dtype)
+        serie_normalizada = df_tratado[coluna].apply(normalizar_numero)
+        convertido = pd.to_numeric(serie_normalizada, errors="coerce")
+        novos_nulos = int(convertido.isna().sum() - df_tratado[coluna].isna().sum())
+        valores_origem = int(df_tratado[coluna].notna().sum())
+        proporcao_convertida = float(convertido.notna().sum() / max(1, valores_origem))
 
-        serie_normalizada = df_tratado[coluna].apply(
-            normalizar_numero
-        )
-
-        convertido = pd.to_numeric(
-            serie_normalizada,
-            errors="coerce"
-        )
-
-        novos_nulos = (
-            convertido.isna().sum()
-            - df_tratado[coluna].isna().sum()
-        )
-
-        if novos_nulos > 0:
+        if novos_nulos > 0 and proporcao_convertida < 0.95:
             log.adicionar(
                 coluna=coluna,
                 tipo_transformacao="conversao_numerica_cancelada",
                 antes=tipo_antes,
                 depois=tipo_antes,
                 detalhes=(
-                    f"A conversão geraria {novos_nulos} "
-                    "novos valores nulos."
+                    f"Conversão cancelada: somente {proporcao_convertida:.2%} dos valores não nulos "
+                    f"puderam ser interpretados como números; {novos_nulos} valores foram preservados sem conversão."
                 )
             )
-
             continue
 
         df_tratado[coluna] = convertido
-
-        log.adicionar(
-            coluna=coluna,
-            tipo_transformacao="conversao_numerica",
-            antes=tipo_antes,
-            depois=str(df_tratado[coluna].dtype),
-            detalhes="Conversão realizada com sucesso."
-        )
+        if novos_nulos:
+            log.adicionar(
+                coluna=coluna,
+                tipo_transformacao="conversao_numerica_parcial",
+                antes=tipo_antes,
+                depois=str(df_tratado[coluna].dtype),
+                detalhes=(
+                    f"Conversão realizada com {proporcao_convertida:.2%} de confiança; {novos_nulos} valores "
+                    "não numéricos ficaram nulos no dataset analítico. Os dados originais permanecem preservados."
+                )
+            )
+        else:
+            log.adicionar(
+                coluna=coluna,
+                tipo_transformacao="conversao_numerica",
+                antes=tipo_antes,
+                depois=str(df_tratado[coluna].dtype),
+                detalhes="Conversão realizada com sucesso."
+            )
 
     return df_tratado
 

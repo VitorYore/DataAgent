@@ -1,6 +1,21 @@
 import { expect, test } from './fixtures'
 import { resumoExecutivo } from '../src/mocks/resumoExecutivo'
 
+test('422 estrutural apresenta confiança e motivo sem erro de conexão', async ({ page }) => {
+  await page.route('**/api/analysis', route => route.fulfill({ status: 422, json: { detail: {
+    mensagem: 'Estrutura não reconhecida com segurança.', confianca: 42,
+    motivo: 'Nenhum bloco transacional atingiu os critérios de extração segura.',
+    diagnostico: 'diagnostico_estrutural.json',
+  } } }))
+  await page.goto('/data')
+  await page.getByLabel('Selecionar arquivos CSV ou Excel').setInputFiles({ name: 'arquivo.csv', mimeType: 'text/csv', buffer: Buffer.from('dados') })
+  await page.getByRole('button', { name: 'Analisar Dados', exact: true }).click()
+  await expect(page.getByRole('alert')).toContainText('Confiança estrutural: 42%')
+  await expect(page.getByRole('alert')).toContainText('Motivo: Nenhum bloco transacional')
+  await expect(page.getByRole('alert')).not.toContainText('conexão com o backend foi interrompida')
+  await expect(page.getByText('arquivo.csv', { exact: true })).toBeVisible()
+})
+
 test('análise demorada não é cancelada por temporizador do frontend', async ({ page }) => {
   await page.goto('/data')
   await expect(page.getByText('Qualidade não disponível', { exact: true })).toBeVisible()

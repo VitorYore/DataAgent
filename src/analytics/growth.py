@@ -24,20 +24,44 @@ def calcular_variacao(
     )
 
 
+# The percentage is not informative when the initial value is less than
+# this fraction of the series median magnitude.
+LIMIAR_BASE_RELATIVA_EVOLUCAO = 0.05
+
+
+def avaliar_evolucao_total(serie: pd.Series) -> dict:
+    """Compare first and last periods while retaining their absolute difference."""
+    valores = pd.to_numeric(serie, errors="coerce").dropna()
+    if len(valores) < 2:
+        return {"variacao_percentual": None, "motivo": "dados_insuficientes", "variacao_absoluta": None}
+
+    inicial = float(valores.iloc[0])
+    final = float(valores.iloc[-1])
+    absoluta = round(final - inicial, 2)
+    resultado = {"variacao_percentual": None, "motivo": None, "variacao_absoluta": absoluta}
+
+    if inicial == 0:
+        resultado["motivo"] = "base_zero"
+        return resultado
+    if inicial * final < 0:
+        resultado["motivo"] = "mudanca_de_sinal"
+        return resultado
+
+    magnitudes = valores[valores.abs() > 0].abs()
+    mediana = float(magnitudes.median()) if not magnitudes.empty else 0.0
+    if mediana and abs(inicial) < mediana * LIMIAR_BASE_RELATIVA_EVOLUCAO:
+        resultado["motivo"] = "base_muito_baixa"
+        return resultado
+
+    resultado["variacao_percentual"] = round((final - inicial) / abs(inicial) * 100, 2)
+    return resultado
+
+
 def calcular_evolucao_total(
     serie: pd.Series
 ) -> float | None:
 
-    if len(serie) < 2:
-        return None
-
-    primeiro_valor = serie.iloc[0]
-    ultimo_valor = serie.iloc[-1]
-
-    return calcular_variacao(
-        ultimo_valor,
-        primeiro_valor
-    )
+    return avaliar_evolucao_total(serie)["variacao_percentual"]
 
 
 def encontrar_sequencias_queda(
@@ -242,11 +266,8 @@ def analisar_crescimento(
     # 6. EVOLUÇÃO GERAL DO FATURAMENTO
     # ========================================
 
-    evolucao_faturamento = (
-        calcular_evolucao_total(
-            faturamento_mensal
-        )
-    )
+    avaliacao_evolucao = avaliar_evolucao_total(faturamento_mensal)
+    evolucao_faturamento = avaliacao_evolucao["variacao_percentual"]
 
     # ========================================
     # 7. RESULTADO BASE
@@ -254,9 +275,9 @@ def analisar_crescimento(
 
     resultado = {
         "faturamento": {
-            "evolucao_total": (
-                evolucao_faturamento
-            ),
+            "evolucao_total": evolucao_faturamento,
+            "evolucao_motivo": avaliacao_evolucao["motivo"],
+            "variacao_absoluta": avaliacao_evolucao["variacao_absoluta"],
             "tendencia": definir_tendencia(
                 evolucao_faturamento
             ),

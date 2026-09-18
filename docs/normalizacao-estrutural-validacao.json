@@ -1,0 +1,255 @@
+{
+  "regressao": [
+    {
+      "arquivo": "data\\samples\\Avaliacoes.csv",
+      "linhas": 10000,
+      "colunas": 3,
+      "equivalente": true
+    },
+    {
+      "arquivo": "data\\samples\\Campanhas.csv",
+      "linhas": 1999,
+      "colunas": 8,
+      "equivalente": true
+    },
+    {
+      "arquivo": "data\\samples\\Clientes.csv",
+      "linhas": 1000,
+      "colunas": 8,
+      "equivalente": true
+    },
+    {
+      "arquivo": "data\\samples\\Colaboradores.csv",
+      "linhas": 500,
+      "colunas": 9,
+      "equivalente": true
+    },
+    {
+      "arquivo": "data\\samples\\Custos_Operacionais.csv",
+      "linhas": 100,
+      "colunas": 5,
+      "equivalente": true
+    },
+    {
+      "arquivo": "data\\samples\\Devolucoes.csv",
+      "linhas": 1000,
+      "colunas": 7,
+      "equivalente": true
+    },
+    {
+      "arquivo": "data\\samples\\Fornecedores.csv",
+      "linhas": 100,
+      "colunas": 7,
+      "equivalente": true
+    },
+    {
+      "arquivo": "data\\samples\\Historico_Vendas.csv",
+      "linhas": 10000,
+      "colunas": 9,
+      "equivalente": true
+    },
+    {
+      "arquivo": "data\\samples\\Lojas.csv",
+      "linhas": 5,
+      "colunas": 5,
+      "equivalente": true
+    },
+    {
+      "arquivo": "data\\samples\\Pedidos_Compra.csv",
+      "linhas": 1000,
+      "colunas": 5,
+      "equivalente": true
+    },
+    {
+      "arquivo": "data\\samples\\Produtos.csv",
+      "linhas": 1000,
+      "colunas": 9,
+      "equivalente": true
+    },
+    {
+      "arquivo": "data\\samples\\Satisfacao.csv",
+      "linhas": 1000,
+      "colunas": 5,
+      "equivalente": true
+    },
+    {
+      "arquivo": "data\\samples\\Stock.csv",
+      "linhas": 1000,
+      "colunas": 5,
+      "equivalente": true
+    },
+    {
+      "arquivo": "data\\samples\\Vendas.csv",
+      "linhas": 20000,
+      "colunas": 9,
+      "equivalente": true
+    },
+    {
+      "arquivo": "data\\processed\\vendas_tratadas.csv",
+      "linhas": 3295,
+      "colunas": 9,
+      "equivalente": true
+    }
+  ],
+  "resumo_analitico_equivalente": true,
+  "qualidade_equivalente": true,
+  "kpis_multitabela": {
+    "faturamento_total": 505159249.56,
+    "lucro_total": 474743291.13,
+    "custo_total": 30415958.43,
+    "margem_lucro": 93.98,
+    "ticket_medio": 25257.96,
+    "quantidade_pedidos": 20000,
+    "quantidade_vendida": 1009021.0
+  },
+  "benchmark": {
+    "estrutura_detectada": "relatorio_operacional",
+    "origem": null,
+    "linhas_originais": 30061,
+    "registros_extraidos": 30000,
+    "linhas_resumo": 30,
+    "linhas_periodo": 30,
+    "linhas_vazias": 0,
+    "linhas_desconhecidas": 0,
+    "percentual_linhas_reconhecidas": 100.0,
+    "percentual_linhas_desconhecidas": 0.0,
+    "confianca_estrutural": 100.0,
+    "linhas_separadas": 61,
+    "quantidade_blocos": 1,
+    "revisao_necessaria": false,
+    "duracao_segundos": 1.288
+  },
+  "exemplo": {
+    "metadados": {
+      "estrutura_detectada": "relatorio_operacional",
+      "origem": null,
+      "linhas_originais": 5,
+      "registros_extraidos": 2,
+      "linhas_resumo": 1,
+      "linhas_periodo": 1,
+      "linhas_vazias": 0,
+      "linhas_desconhecidas": 0,
+      "percentual_linhas_reconhecidas": 100.0,
+      "percentual_linhas_desconhecidas": 0.0,
+      "confianca_estrutural": 100.0,
+      "linhas_separadas": 3,
+      "auditoria_linhas": [
+        {
+          "linha": 1,
+          "tipo": "cabecalho",
+          "confianca": 100,
+          "valores": [
+            "Pedido_ID",
+            "Data",
+            "Faturamento",
+            "Lucro"
+          ]
+        },
+        {
+          "linha": 2,
+          "tipo": "periodo",
+          "confianca": 100,
+          "periodo_contexto": "Janeiro",
+          "valores": [
+            "Janeiro",
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "linha": 3,
+          "tipo": "transacao",
+          "confianca": 100.0,
+          "periodo_contexto": "Janeiro",
+          "datas_registro": [
+            "2025-01-01"
+          ]
+        },
+        {
+          "linha": 4,
+          "tipo": "transacao",
+          "confianca": 100.0,
+          "periodo_contexto": "Janeiro",
+          "datas_registro": [
+            "2025-01-02"
+          ]
+        },
+        {
+          "linha": 5,
+          "tipo": "total",
+          "confianca": 100,
+          "periodo_contexto": "Janeiro",
+          "valores": [
+            "Total",
+            null,
+            300,
+            90
+          ]
+        }
+      ],
+      "resumos": [
+        {
+          "linha": 5,
+          "tipo": "total",
+          "confianca": 100,
+          "periodo_contexto": "Janeiro",
+          "valores": [
+            "Total",
+            null,
+            300,
+            90
+          ]
+        }
+      ],
+      "evidencias_excel": {},
+      "transformacoes": [],
+      "blocos": [
+        {
+          "id": "bloco_1",
+          "linha_cabecalho": 1,
+          "linhas_origem": [
+            3,
+            4
+          ],
+          "nomes_originais": [
+            "Pedido_ID",
+            "Data",
+            "Faturamento",
+            "Lucro"
+          ]
+        }
+      ],
+      "quantidade_blocos": 1,
+      "revisao_necessaria": false
+    },
+    "registros": [
+      {
+        "Pedido_ID": 1,
+        "Data": "2025-01-01",
+        "Faturamento": 100,
+        "Lucro": 40
+      },
+      {
+        "Pedido_ID": 2,
+        "Data": "2025-01-02",
+        "Faturamento": 200,
+        "Lucro": 50
+      }
+    ]
+  },
+  "planilha_real": {
+    "status": "revisao_necessaria",
+    "abas": {
+      "VENDAS": {
+        "registros_extraidos": 3286,
+        "linhas_resumo": 36,
+        "linhas_periodo": 11,
+        "linhas_desconhecidas": 52,
+        "confianca_estrutural": 98.44,
+        "quantidade_blocos": 1
+      }
+    },
+    "duracao_segundos": 6.079
+  }
+}

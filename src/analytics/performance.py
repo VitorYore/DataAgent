@@ -5,7 +5,8 @@ from src.analytics.business import encontrar_coluna_por_papel
 
 
 def analisar_desempenho(
-    df: pd.DataFrame
+    df: pd.DataFrame,
+    dados_temporais: pd.DataFrame | None = None,
 ) -> dict:
 
     mapeamento = mapear_colunas(df)
@@ -70,7 +71,8 @@ def analisar_desempenho(
 
     if coluna_data:
 
-        dados = df.dropna(
+        fonte_temporal = dados_temporais if dados_temporais is not None else df
+        dados = fonte_temporal.dropna(
             subset=[
                 coluna_data,
                 coluna_lucro

@@ -54,6 +54,20 @@ class UploadTests(unittest.TestCase):
         self.assertEqual(result.json()["summary"]["kpis"]["faturamento_total"], 1200)
         self.assertEqual(result.json()["files_processed"], 1)
 
+    def test_insight_unicode_survives_http_json_encoding(self):
+        payload = (
+            "data,faturamento\n"
+            "2025-01-15,100\n"
+            "2025-02-15,200\n"
+            "2025-03-15,300\n"
+        ).encode("utf-8")
+        response = self.post([("vendas.csv", payload)])
+        self.assertEqual(response.status_code, 200, response.text)
+        period = "per" + chr(237) + "odo"
+        insights = response.json()["summary"]["principais_insights"]
+        self.assertTrue(any(("O " + period) in item["mensagem"] for item in insights))
+        self.assertIn(("O " + period).encode("utf-8"), response.content)
+
     def test_excel_xlsx_and_xls(self):
         data = pd.read_csv(io.BytesIO(CSV))
         xlsx = io.BytesIO()

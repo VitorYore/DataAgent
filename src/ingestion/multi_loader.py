@@ -1,7 +1,8 @@
 from pathlib import Path
 
 import pandas as pd
-from src.ingestion.loader import carregar_dados
+from src.ingestion.loader import carregar_dados, carregar_tabelas_arquivo
+from src.ingestion.report_normalizer import StructuralReviewRequired
 
 
 PASTA_DADOS = Path(
@@ -116,16 +117,15 @@ def carregar_multiplas_tabelas(
 
         try:
 
-            df = carregar_arquivo(
-                caminho
-            )
-
-            if estrito and df.empty:
+            regioes = carregar_tabelas_arquivo(caminho)
+            if estrito and any(df.empty for df in regioes.values()):
                 raise ValueError("A tabela não contém linhas de dados.")
+            if tabelas.keys() & regioes.keys():
+                raise ValueError('Nomes de tabelas em conflito.')
+            tabelas.update(regioes)
 
-            tabelas[
-                nome_tabela
-            ] = df
+        except StructuralReviewRequired:
+            raise
 
         except Exception as erro:
 

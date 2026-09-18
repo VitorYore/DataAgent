@@ -20,10 +20,7 @@ test('listas vazias usam os estados originais', async ({ page }) => {
   const summary = structuredClone(resumoExecutivo)
   summary.temporal.serie_temporal = []
   summary.produtos.ranking_produtos = []
-  await page.route('**/src/services/dataAgentService.ts', (route) => route.fulfill({
-    contentType: 'application/javascript',
-    body: `export async function analyzeDatasets() {} export async function getExecutiveSummary() { return ${JSON.stringify(summary)} }`,
-  }))
+  await page.route('**/api/analysis/latest', (route) => route.fulfill({ json: summary }))
   await page.goto('/performance')
   await expect(page.getByText('Histórico ainda indisponível')).toBeVisible()
   await expect(page.getByLabel('Gráfico de faturamento e lucro')).toHaveCount(0)
@@ -42,10 +39,7 @@ test('nulos não viram zero e posições não são recalculadas', async ({ page 
     { ...summary.produtos.ranking_produtos[0], posicao: 7, avaliacao_media: null, taxa_devolucao: null, estoque_atual: 0 },
     { ...summary.produtos.ranking_produtos[0], posicao: 2, produto: 'Segundo item recebido' },
   ]
-  await page.route('**/src/services/dataAgentService.ts', (route) => route.fulfill({
-    contentType: 'application/javascript',
-    body: `export async function analyzeDatasets() {} export async function getExecutiveSummary() { return ${JSON.stringify(summary)} }`,
-  }))
+  await page.route('**/api/analysis/latest', (route) => route.fulfill({ json: summary }))
   await page.goto('/performance')
   await expect(page.getByLabel('Gráfico de faturamento e lucro').locator('.recharts-line-dot')).toHaveCount(2)
   await page.goto('/products')

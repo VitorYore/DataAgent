@@ -33,6 +33,7 @@ export function ExecutiveSummaryPage({ title, description, children }: {
             onClick={() => void refreshSummary()}>Tentar novamente</button>
         </div>
       )}
+      {status === 'mapping_required' && <div role="status"><EmptyState title="Análise aguardando confirmação de campos" description="A estrutura foi recuperada. Confirme os significados na página Dados para continuar a análise." /></div>}
       {summary && status !== 'empty' && <div className="space-y-8">{children(summary!)}</div>}
     </>
   )

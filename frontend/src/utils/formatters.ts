@@ -70,6 +70,11 @@ export function formatCurrency(value: number | null | undefined, compact = false
   return (compact ? compactCurrencyFormatter : currencyFormatter).format(value)
 }
 
+export function formatSignedCurrency(value: number | null | undefined): string {
+  if (value == null) return 'Não disponível'
+  return `${value > 0 ? '+' : value < 0 ? '−' : ''}${formatCurrency(Math.abs(value))}`
+}
+
 /** Recebe o percentual pronto: 93.98 resulta em 93,98%. */
 export function formatPercentage(value: number | null | undefined): string {
   if (value == null) return 'Não disponível'
@@ -86,4 +91,19 @@ export function formatCompactNumber(value: number | null | undefined): string {
 export function formatInteger(value: number | null | undefined): string {
   if (value == null) return 'Não disponível'
   return integerFormatter.format(value)
+}
+
+export function formatDateTime(value?: string): string {
+  if (!value) return 'Não disponível'
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? 'Não disponível' : new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(date)
+}
+
+/** Somente apresentação da variação já calculada pelo backend. */
+export function formatVariation(value: number | null | undefined, points = false): string {
+  if (value == null) return 'Não disponível'
+  const formatted = points
+    ? `${new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2 }).format(value)} p.p.`
+    : formatPercentage(value)
+  return `${value > 0 ? '+' : ''}${formatted}`
 }

@@ -13,34 +13,52 @@ def analisar_meses(df: pd.DataFrame) -> dict:
         "data"
     )
 
-    coluna_faturamento = encontrar_coluna_por_papel(
-        mapeamento,
-        "faturamento"
+    metricas = (
+        ("faturamento", "Faturamento"),
+        ("valor_total", "Valor Total"),
+        ("valor_com_desconto", "Valor com Desconto"),
+        ("margem_bruta", "Margem Bruta"),
+        ("lucro", "Lucro"),
+        ("custo", "Custo"),
+    )
+    metrica, nome_metrica, coluna_valor = next(
+        ((papel, rotulo, encontrar_coluna_por_papel(mapeamento, papel))
+         for papel, rotulo in metricas
+         if encontrar_coluna_por_papel(mapeamento, papel)),
+        (None, None, None),
     )
 
-    if not coluna_data or not coluna_faturamento:
+    if not coluna_data or not coluna_valor:
         return {
             "erro": (
                 "Não foi possível identificar "
-                "Data e Faturamento."
+                "Data e uma métrica monetária semântica."
             )
         }
 
     dados = df.dropna(
         subset=[
             coluna_data,
-            coluna_faturamento
+            coluna_valor
         ]
     ).copy()
+    if not pd.api.types.is_datetime64_any_dtype(dados[coluna_data]):
+        dados[coluna_data] = pd.to_datetime(
+            dados[coluna_data], errors="coerce", format="mixed", dayfirst=True
+        )
+        dados = dados.dropna(subset=[coluna_data])
+
+    if dados.empty:
+        return {"erro": "Não existem datas válidas para análise temporal."}
 
     dados["Periodo"] = (
         dados[coluna_data]
         .dt.to_period("M")
     )
 
-    faturamento_mensal = (
+    valores_mensais = (
         dados
-        .groupby("Periodo")[coluna_faturamento]
+        .groupby("Periodo")[coluna_valor]
         .sum()
         .sort_index()
     )
@@ -51,7 +69,7 @@ def analisar_meses(df: pd.DataFrame) -> dict:
         .size()
     )
 
-    if faturamento_mensal.empty:
+    if valores_mensais.empty:
         return {
             "erro": (
                 "Não existem dados mensais suficientes."
@@ -62,8 +80,8 @@ def analisar_meses(df: pd.DataFrame) -> dict:
     # MELHOR E PIOR MÊS
     # ========================================
 
-    melhor_mes = faturamento_mensal.idxmax()
-    pior_mes = faturamento_mensal.idxmin()
+    melhor_mes = valores_mensais.idxmax()
+    pior_mes = valores_mensais.idxmin()
 
     # ========================================
     # VARIAÇÃO ENTRE MESES CONSECUTIVOS
@@ -72,7 +90,7 @@ def analisar_meses(df: pd.DataFrame) -> dict:
     variacao_mensal = {}
 
     periodos = list(
-        faturamento_mensal.index
+        valores_mensais.index
     )
 
     for indice in range(1, len(periodos)):
@@ -88,11 +106,11 @@ def analisar_meses(df: pd.DataFrame) -> dict:
         ):
             continue
 
-        valor_atual = faturamento_mensal.loc[
+        valor_atual = valores_mensais.loc[
             periodo_atual
         ]
 
-        valor_anterior = faturamento_mensal.loc[
+        valor_anterior = valores_mensais.loc[
             periodo_anterior
         ]
 
@@ -124,36 +142,39 @@ def analisar_meses(df: pd.DataFrame) -> dict:
             periodos_suspeitos.append({
                 "periodo": str(periodo),
                 "registros": int(quantidade),
-                "faturamento": round(
-                    faturamento_mensal.loc[periodo],
+                "valor": round(
+                    valores_mensais.loc[periodo],
                     2
-                )
+                ),
+                "metrica": metrica,
+                "nome_metrica": nome_metrica,
+                **({"faturamento": round(valores_mensais.loc[periodo], 2)} if metrica == "faturamento" else {})
             })
 
-    return {
+    resultado = {
+        "metrica": metrica,
+        "nome_metrica": nome_metrica,
         "melhor_mes": {
             "periodo": str(melhor_mes),
-            "faturamento": round(
-                faturamento_mensal.loc[melhor_mes],
-                2
-            )
+            "valor": round(valores_mensais.loc[melhor_mes], 2),
+            "metrica": metrica,
+            "nome_metrica": nome_metrica,
         },
-
         "pior_mes": {
             "periodo": str(pior_mes),
-            "faturamento": round(
-                faturamento_mensal.loc[pior_mes],
-                2
-            )
+            "valor": round(valores_mensais.loc[pior_mes], 2),
+            "metrica": metrica,
+            "nome_metrica": nome_metrica,
         },
-
-        "faturamento_mensal": {
+        "valores_mensais": {
             str(periodo): round(valor, 2)
-            for periodo, valor
-            in faturamento_mensal.items()
+            for periodo, valor in valores_mensais.items()
         },
-
         "variacao_mensal": variacao_mensal,
-
-        "periodos_suspeitos": periodos_suspeitos
+        "periodos_suspeitos": periodos_suspeitos,
     }
+    if metrica == "faturamento":
+        resultado["melhor_mes"]["faturamento"] = resultado["melhor_mes"]["valor"]
+        resultado["pior_mes"]["faturamento"] = resultado["pior_mes"]["valor"]
+        resultado["faturamento_mensal"] = resultado["valores_mensais"]
+    return resultado

@@ -7,6 +7,7 @@ import Products from './pages/Products'
 import Customers from './pages/Customers'
 import Opportunities from './pages/Opportunities'
 import Data from './pages/Data'
+import History from './pages/History'
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="customers" element={<Customers />} />
         <Route path="opportunities" element={<Opportunities />} />
         <Route path="data" element={<Data />} />
+        <Route path="history" element={<History />} />
         <Route path="*" element={<><EmptyState title="Página não encontrada" description="Este endereço não está disponível." /><Link to="/" className="mt-6 inline-block text-sm text-accent underline">Voltar para visão geral</Link></>} />
       </Route>
     </Routes>
