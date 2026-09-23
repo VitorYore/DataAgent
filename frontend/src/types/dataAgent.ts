@@ -280,6 +280,7 @@ export interface IngestionInfo {
   colunas_muitos_nulos?: Record<string, number>
 }
 export interface DataQuality {
+  entity_resolution?: EntityResolution
   arquivos?: DataFileInfo[]
   quantidade_arquivos?: number | null
   status?: string
@@ -318,4 +319,33 @@ export interface DataQuality {
     origens?: Record<string, { origem?: string; confianca?: number | null }>
   }
   ingestao?: IngestionInfo | Record<string, IngestionInfo>
+}
+
+export interface EntitySide { value: string; records: number; orders: number | null; metric_value: number | null }
+export interface EntityCandidate {
+  entity_type: string; column: string
+  candidate_id?: string
+  status?: 'pending' | 'merged' | 'kept_separate'
+  recommended_value?: string
+  canonical_value?: string | null
+  left: EntitySide; right: EntitySide
+  metric: { concept: string; label: string; column: string } | null
+  combined_preview: number | null
+  similarity: number; confidence: 'alta' | 'media'; reasons: string[]
+}
+export interface EntityDecision {
+  candidate_id: string; entity_type: string; column: string
+  left: string; right: string
+  decision: 'merge' | 'keep_separate'
+  canonical_value: string | null
+  created_at: string; origin: 'user_confirmation'
+}
+export interface EntityResolution {
+  can_decide?: boolean
+  decisions?: EntityDecision[]
+  summary?: Record<string, { total: number; pending: number; merged: number; kept_separate: number }>
+  candidates: EntityCandidate[]
+  total_candidates: number
+  possible_duplicate_entities: Record<string, number>
+  truncated: boolean; stable_id_types: string[]
 }

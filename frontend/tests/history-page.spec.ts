@@ -91,3 +91,19 @@ for (const [input, output] of historicalTexts) {
     expect(dialogs).toBe(0)
   })
 }
+
+for (const width of [320, 390]) {
+  test(`historical analysis with a long ID fits mobile at ${width}px`, async ({ page }) => {
+    const id = 'analysis_20260922_162214936952_86bdd6b06ce647528ddb4b290b843c6a'
+    await page.setViewportSize({ width, height: 844 })
+    await page.addInitScript(value => localStorage.setItem('dataagent.viewing-historical-analysis-id', value), id)
+    await page.route('**/api/analysis/history', route => route.fulfill({ json: [{ ...entries[0], id }] }))
+    await page.route(`**/api/analysis/${id}`, route => route.fulfill({ json: { ...resumoExecutivo, analysis_id: id } }))
+    await page.goto('/data')
+    await expect(page.getByText(`(${id})`, { exact: true })).toBeVisible()
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+    await page.reload()
+    await expect(page.getByText(`(${id})`, { exact: true })).toBeVisible()
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+  })
+}

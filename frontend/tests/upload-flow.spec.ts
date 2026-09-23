@@ -129,3 +129,66 @@ test('multitabela envia todos os arquivos e disponibiliza o mesmo resultado nas 
   await page.getByRole('link', { name: 'Oportunidades', exact: true }).click()
   await expect(page.getByRole('region', { name: 'Pontos de Atenção' })).toBeVisible()
 })
+
+test('diagnostico de entidades no upload preserva clientes e historico', async ({ page }) => {
+  await page.goto('/data')
+  await page.getByLabel('Selecionar arquivos CSV ou Excel').setInputFiles({
+    name: 'entidades.csv', mimeType: 'text/csv',
+    buffer: Buffer.from('Pedido,Data,Cliente,Valor_Total\n1,2020-01-01,Empresa ABC,100\n2,2020-02-01,EMPRESA ABC,50\n'),
+  })
+  const uploaded = page.waitForResponse(r => r.url().endsWith('/api/analysis') && r.request().method() === 'POST')
+  await page.getByRole('button', { name: 'Analisar Dados', exact: true }).click()
+  const response = await uploaded
+  expect(response.status()).toBe(200)
+  const summary = (await response.json()).summary
+  expect(summary.clientes.quantidade_clientes).toBe(2)
+  expect(summary.kpis.valor_total).toBe(150)
+  expect(summary.dados.entity_resolution.total_candidates).toBe(1)
+  await expect(page).toHaveURL('/')
+  await page.getByRole('link', { name: 'Dados', exact: true }).click()
+  const panel = page.getByRole('region', { name: 'Possíveis duplicidades' })
+  await expect(panel).toContainText('Nenhum dado foi alterado.')
+  await expect(panel).toContainText('Possível total combinado (Valor Total): R$ 150,00')
+  await expect(panel.getByRole('button', { name: 'Unir entidades', exact: true })).toHaveCount(1)
+  await page.getByRole('link', { name: 'Histórico', exact: true }).click()
+  await page.locator('article').filter({ has: page.getByRole('heading', { name: 'entidades.csv', exact: true }) }).getByRole('button', { name: 'Abrir análise' }).click()
+  await expect(page).toHaveURL('/')
+  await page.getByRole('link', { name: 'Dados', exact: true }).click()
+  await page.reload()
+  await expect(panel).toContainText('Possível total combinado (Valor Total): R$ 150,00')
+})
+
+test('uniao real preserva totais e reaparece no historico', async ({ page }) => {
+  await page.goto('/data')
+  await page.getByLabel('Selecionar arquivos CSV ou Excel').setInputFiles({
+    name: 'uniao.csv', mimeType: 'text/csv',
+    buffer: Buffer.from('Pedido,Data,Cliente,Faturamento,Custo,Lucro\n1,2020-01-01,Empresa ABC,100,70,30\n2,2020-02-01,EMPRESA ABC,50,30,20\n'),
+  })
+  const uploaded = page.waitForResponse(r => r.url().endsWith('/api/analysis') && r.request().method() === 'POST')
+  await page.getByRole('button', { name: 'Analisar Dados', exact: true }).click()
+  const before = (await (await uploaded).json()).summary
+  await expect(page).toHaveURL('/')
+  await page.getByRole('link', { name: 'Dados', exact: true }).click()
+  const panel = page.getByRole('region', { name: 'Possíveis duplicidades' })
+  await panel.getByRole('button', { name: 'Unir entidades', exact: true }).click()
+  const confirmed = page.waitForResponse(r => r.url().endsWith('/entities') && r.request().method() === 'POST')
+  await panel.getByRole('button', { name: 'Confirmar união', exact: true }).click()
+  const response = await confirmed
+  expect(response.status()).toBe(200)
+  const after = (await response.json()).summary
+  expect(after.kpis).toEqual(before.kpis)
+  expect(after.temporal).toEqual(before.temporal)
+  expect(before.clientes.quantidade_clientes).toBe(2)
+  expect(after.clientes.quantidade_clientes).toBe(1)
+  await panel.getByLabel('Estado das sugestões').selectOption('merged')
+  await expect(panel).toContainText('Label utilizado: Empresa ABC')
+  await page.getByRole('link', { name: 'Clientes', exact: true }).click()
+  await expect(page.getByRole('heading', { name: 'Clientes', exact: true })).toBeVisible()
+  await page.getByRole('link', { name: 'Histórico', exact: true }).click()
+  await page.locator('article').filter({ has: page.getByRole('heading', { name: 'uniao.csv', exact: true }) }).getByRole('button', { name: 'Abrir análise' }).click()
+  await expect(page).toHaveURL('/')
+  await page.getByRole('link', { name: 'Dados', exact: true }).click()
+  await page.reload()
+  await panel.getByLabel('Estado das sugestões').selectOption('merged')
+  await expect(panel).toContainText('Label utilizado: Empresa ABC')
+})

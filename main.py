@@ -907,6 +907,37 @@ def executar_pipeline_analitico(
     # 10. MAPEAMENTO
     # ========================================
 
+    from src.quality.entity_resolution import detectar_entidades
+    from src.quality.entity_decisions import preparar_revisao
+    entity_report = preparar_revisao(detectar_entidades(df_analise), analysis_id, df_analise)
+    contexto = {
+        "diagnostico": diagnostico, "problemas": problemas, "logs_etl": logs_etl,
+        "arquivos_analisados": arquivos_analisados, "analysis_id": analysis_id,
+        "automatic_mappings": automatic_mappings, "semantic_mappings": semantic_mappings,
+    }
+    if analysis_id:
+        import pandas as pd
+        diretorio_saida.mkdir(parents=True, exist_ok=True)
+        pd.to_pickle({"dataframe": df_analise, "contexto": contexto},
+                     diretorio_saida / "entity_analysis.pkl")
+        entity_report["can_decide"] = True
+    return continuar_analytics(df_analise, contexto, diretorio_saida, entity_report)
+
+
+def continuar_analytics(dataframe_original, contexto, diretorio_saida, entity_report):
+    """Reutiliza a análise existente sobre uma cópia, sem repetir ingestão ou ETL."""
+    from copy import deepcopy
+    from src.quality.entity_decisions import aplicar_aliases
+    contexto = deepcopy(contexto)
+    diagnostico = contexto["diagnostico"]
+    problemas = contexto["problemas"]
+    logs_etl = contexto["logs_etl"]
+    arquivos_analisados = contexto["arquivos_analisados"]
+    analysis_id = contexto["analysis_id"]
+    automatic_mappings = contexto["automatic_mappings"]
+    semantic_mappings = contexto["semantic_mappings"]
+    df_analise = aplicar_aliases(dataframe_original, entity_report)
+
     mapeamento = mapear_colunas(
         df_analise
     )
@@ -1971,10 +2002,10 @@ def executar_pipeline_analitico(
 
     resumo_executivo['dados'] = gerar_qualidade_dados(
         diagnostico, problemas, logs_etl, arquivos_analisados,
-        dataframe=df_analise, mapeamento=mapeamento,
+        dataframe=dataframe_original, mapeamento=mapeamento,
     )
     mapping_origins = {}
-    ingestion_meta = diagnostico.get('ingestao', df.attrs.get('ingestao', {}))
+    ingestion_meta = diagnostico.get('ingestao', dataframe_original.attrs.get('ingestao', {}))
     ingestion_structures = [ingestion_meta] if isinstance(ingestion_meta, dict) else []
     if isinstance(ingestion_meta, dict):
         ingestion_structures.extend(value for value in ingestion_meta.values() if isinstance(value, dict))
@@ -1998,6 +2029,7 @@ def executar_pipeline_analitico(
         'origens': mapping_origins,
     }
     resumo_executivo['analysis_id'] = analysis_id
+    resumo_executivo['dados']['entity_resolution'] = entity_report
     print(
         "\n=== RESUMO EXECUTIVO ===\n"
     )

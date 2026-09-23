@@ -115,6 +115,14 @@ def create_app(report_path: Path = REPORT_PATH, uploads_path: Path | None = None
             raise HTTPException(422, "O corpo deve conter o objeto mappings.")
         return runner.confirm_mapping(analysis_id, mappings)
 
+    @app.get("/api/analysis/{analysis_id}/entities")
+    def entities(analysis_id: str):
+        return JSONResponse(runner.get_entities(analysis_id), headers={"Cache-Control": "no-store"})
+
+    @app.post("/api/analysis/{analysis_id}/entities")
+    def decide_entities(analysis_id: str, payload: dict = Body(...)):
+        return runner.decide_entity(analysis_id, payload)
+
     @app.get("/api/health")
     def health():
         return {"status": "ok", "service": "DataAgent API"}

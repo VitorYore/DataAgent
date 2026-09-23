@@ -145,6 +145,14 @@ export async function getAnalysis(analysisId: string): Promise<ExecutiveSummary>
   return validateSummary(await response.json())
 }
 
+export async function decideEntity(analysisId: string, candidateId: string, decision: 'merge' | 'keep_separate'): Promise<AnalysisResponse> {
+  const response = await fetch(`${apiUrl}/api/analysis/${encodeURIComponent(analysisId)}/entities`, {
+    method: 'POST', headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ candidate_id: candidateId, decision }),
+  })
+  return readAnalysisResponse(response)
+}
+
 export async function compareAnalyses(left: string, right: string): Promise<AnalysisComparison> {
   const query = new URLSearchParams({ left, right })
   const result = await readHistoryResource('/api/analysis/compare?' + query.toString())

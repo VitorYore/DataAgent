@@ -9,6 +9,7 @@ import { ExecutiveSummaryPage } from '../components/common/ExecutiveSummaryPage'
 import { DataQualityPanel } from '../components/common/DataQualityPanel'
 import { EmptyState } from '../components/common/EmptyState'
 import { AnalysisHistoryPanel } from '../components/common/AnalysisHistoryPanel'
+import { EntityResolutionPanel } from '../components/common/EntityResolutionPanel'
 import { SemanticMappingPanel } from '../components/common/SemanticMappingPanel'
 
 interface SelectedFile {
@@ -17,7 +18,7 @@ interface SelectedFile {
 }
 
 export default function Data() {
-  const { analyzeFiles, processing, mappingRequest, confirmMapping, error: contextError } = useAnalysis()
+  const { analyzeFiles, processing, mappingRequest, confirmMapping, decideEntity, error: contextError } = useAnalysis()
   const navigate = useNavigate()
   const input = useRef<HTMLInputElement>(null)
   const [files, setFiles] = useState<SelectedFile[]>([])
@@ -99,7 +100,10 @@ export default function Data() {
         </div>
         <ExecutiveSummaryPage title="Última análise" description="Qualidade e preparação dos dados da análise atual.">
           {summary => summary.dados
-            ? <DataQualityPanel data={summary.dados} />
+            ? <>
+                {summary.dados.entity_resolution && <EntityResolutionPanel key={summary.analysis_id} report={summary.dados.entity_resolution} processing={processing} onDecide={decideEntity} />}
+                <DataQualityPanel data={summary.dados} />
+              </>
             : <EmptyState title="Qualidade não disponível" description="Esta análise não contém informações de qualidade. Execute uma nova análise para gerar o diagnóstico." />}
         </ExecutiveSummaryPage>
         <AnalysisHistoryPanel />

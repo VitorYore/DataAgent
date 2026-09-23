@@ -5,16 +5,17 @@ import re
 import shutil
 import threading
 from pathlib import Path
-from tempfile import NamedTemporaryFile
+from tempfile import NamedTemporaryFile, TemporaryDirectory
 from time import perf_counter
 
 import pandas as pd
 from fastapi import HTTPException, UploadFile
 
-from main import executar_dataagent, executar_pipeline_analitico
+from main import executar_dataagent, executar_pipeline_analitico, continuar_analytics
 from src.analytics.assisted_mapping import SemanticMappingRequired, conceitos_publicos, validar_mapeamentos
-from src.history.analysis_history import novo_analysis_id, salvar_analise_historico
-from src.history.history_index import persistir_resumo
+from src.history.analysis_history import novo_analysis_id, salvar_analise_historico, obter_analise
+from src.history.history_index import persistir_resumo, obter_resumo, _atomic
+from src.quality.entity_decisions import preparar_revisao, validar_decisao, registrar_decisao
 from src.ingestion.report_normalizer import StructuralReviewRequired
 from src.reports.analysis_report import converter_para_json
 
@@ -174,6 +175,62 @@ class AnalysisRunner:
         finally:
             self.lock.release()
 
+    def get_entities(self, analysis_id: str) -> dict:
+        self._workspace(analysis_id)
+        try:
+            summary = obter_resumo(analysis_id, self.history)
+        except FileNotFoundError as error:
+            raise HTTPException(404, "Análise concluída não encontrada.") from error
+        report = summary.get("dados", {}).get("entity_resolution") or {}
+        report = preparar_revisao(report, analysis_id)
+        report["can_decide"] = (self.history / "working" / analysis_id / "entity_analysis.pkl").is_file()
+        report["analysis_id"] = analysis_id
+        return report
+
+    def decide_entity(self, analysis_id: str, payload: dict) -> dict:
+        if not self.lock.acquire(blocking=False):
+            raise HTTPException(409, "Uma análise já está em andamento.")
+        previous_status = self.status
+        try:
+            report = self.get_entities(analysis_id)
+            candidate = validar_decisao(report, payload)
+            previous = obter_resumo(analysis_id, self.history)
+            record = obter_analise(analysis_id, self.history)
+            if candidate["status"] != "pending":
+                return {"status": "success", "files_processed": len(record["arquivos"]), "summary": previous}
+            if not report["can_decide"]:
+                raise HTTPException(409, "Esta análise antiga não tem intermediário salvo. Execute uma nova análise para aplicar decisões.")
+            # O pickle é interno, criado pelo pipeline; nunca recebemos pickle do upload.
+            saved = pd.read_pickle(self.history / "working" / analysis_id / "entity_analysis.pkl")
+            updated = registrar_decisao(saved["dataframe"], report, payload)
+            self.status = "processing"
+            started = perf_counter()
+            if payload["decision"] == "merge":
+                with TemporaryDirectory(prefix="entities-", dir=self.uploads) as folder:
+                    summary = continuar_analytics(saved["dataframe"], saved["contexto"], Path(folder), updated)
+                if summary["kpis"] != previous["kpis"] or summary.get("temporal") != previous.get("temporal"):
+                    raise ValueError("A decisão alteraria indicadores gerais. A análise anterior foi preservada.")
+            else:
+                summary = previous.copy()
+                summary["dados"] = {**previous["dados"], "entity_resolution": updated}
+            elapsed = perf_counter() - started
+            summary = json.loads(json.dumps(summary, ensure_ascii=False, default=converter_para_json, allow_nan=False))
+            record.update(kpis=summary["kpis"], score=summary["status_geral"].get("score"),
+                          status=summary["status_geral"].get("status"))
+            persistir_resumo(summary, record, self.history)
+            if self.report.is_file():
+                latest = json.loads(self.report.read_text(encoding="utf-8"))
+                if latest.get("analysis_id") == analysis_id:
+                    _atomic(self.report, summary)
+            logger.info("Decisão de entidade aplicada: analysis_id=%s analytics=%.3fs", analysis_id, elapsed)
+            return {"status": "success", "files_processed": len(record["arquivos"]),
+                    "summary": summary, "analytics_seconds": round(elapsed, 3)}
+        except ValueError as error:
+            raise HTTPException(422, str(error)) from error
+        finally:
+            self.status = previous_status
+            self.lock.release()
+
     def _validate_names(self, files: list[UploadFile]) -> list[str]:
         names = []
         for upload in files:
@@ -223,6 +280,11 @@ class AnalysisRunner:
         finally:
             if temporary is not None:
                 temporary.unlink(missing_ok=True)
+        intermediate = workspace / "entity_analysis.pkl"
+        if intermediate.is_file():
+            archive = self.history / "working" / analysis_id
+            archive.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(intermediate, archive / "entity_analysis.pkl")
         history_item = salvar_analise_historico(summary, names, self.history)
         persistir_resumo(summary, history_item, self.history)
         self.status = "completed"

@@ -15,6 +15,7 @@ interface AnalysisState {
   confirmMapping: (mappings: Record<string, string>) => Promise<void>
   openHistoricalAnalysis: (id: string) => Promise<void>
   returnToLatest: () => Promise<void>
+  decideEntity: (candidateId: string, decision: 'merge' | 'keep_separate') => Promise<void>
 }
 
 const PENDING_ID_KEY = 'dataagent.pending-analysis-id'
@@ -137,6 +138,24 @@ export function AnalysisProvider({ children }: { children: ReactNode }) {
     }
   }, [mappingRequest])
 
+  const decideEntity = useCallback(async (candidateId: string, decision: 'merge' | 'keep_separate') => {
+    if (uploading.current || !summary?.analysis_id) throw new Error('Uma análise já está em andamento.')
+    uploading.current = true
+    setProcessing(true)
+    const current = revision.current
+    try {
+      const response = await service.decideEntity(summary.analysis_id, candidateId, decision)
+      if (response.status !== 'success') throw new Error('Resposta da decisão inválida.')
+      if (revision.current !== current) return
+      ++revision.current
+      setSummary(response.summary)
+      setStatus('ready')
+    } finally {
+      uploading.current = false
+      setProcessing(false)
+    }
+  }, [summary])
+
   const openHistoricalAnalysis = useCallback(async (id: string) => {
     setStatus('loading')
     setError('')
@@ -161,7 +180,7 @@ export function AnalysisProvider({ children }: { children: ReactNode }) {
     await refreshSummary()
   }, [refreshSummary])
 
-  return <AnalysisContext.Provider value={{ summary, status, error, processing, mappingRequest, viewingHistorical, refreshSummary, analyzeFiles, confirmMapping, openHistoricalAnalysis, returnToLatest }}>{children}</AnalysisContext.Provider>
+  return <AnalysisContext.Provider value={{ summary, status, error, processing, mappingRequest, viewingHistorical, refreshSummary, analyzeFiles, confirmMapping, openHistoricalAnalysis, returnToLatest, decideEntity }}>{children}</AnalysisContext.Provider>
 }
 
 export function useAnalysis() {
