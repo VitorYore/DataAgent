@@ -48,8 +48,9 @@ def encontrar_coluna_por_papel(
     ]
 
 
-def _normalizacoes_ingestao(df):
-    ingestao = df.attrs.get("ingestao", {})
+def _normalizacoes_ingestao(df, ingestao=None):
+    if ingestao is None:
+        ingestao = df.attrs.get("ingestao", {})
     structures = [ingestao] if isinstance(ingestao, dict) else []
     if isinstance(ingestao, dict):
         structures.extend(value for value in ingestao.values() if isinstance(value, dict))
@@ -66,13 +67,13 @@ def _indice_coluna_excel(letras):
     return indice
 
 
-def _margem_bruta_percentual_por_formulas(df, mapeamento):
+def _margem_bruta_percentual_por_formulas(df, mapeamento, ingestao=None):
     """Pondera linhas usando somente a base comprovada pela f?rmula de origem."""
     numerator_column = encontrar_coluna_por_papel(mapeamento, "margem_bruta")
     if not numerator_column:
         return None
     rows_by_base = {"valor_total": [], "valor_com_desconto": []}
-    for meta in _normalizacoes_ingestao(df):
+    for meta in _normalizacoes_ingestao(df, ingestao):
         labels_by_position = {}
         for header in meta.get("evidencias_cabecalho_tardio", []):
             if not header.get("validado"):
@@ -133,7 +134,8 @@ def _margem_bruta_percentual_por_formulas(df, mapeamento):
 
 
 def calcular_kpis(
-    df: pd.DataFrame
+    df: pd.DataFrame,
+    ingestao: dict | None = None,
 ) -> dict:
 
     mapeamento = mapear_colunas(
@@ -238,7 +240,7 @@ def calcular_kpis(
                     )
                     resultado["margem_bruta_percentual_metodo"] = "media_ponderada_pela_base_semantica_unica"
 
-    percentual_formula = _margem_bruta_percentual_por_formulas(df, mapeamento)
+    percentual_formula = _margem_bruta_percentual_por_formulas(df, mapeamento, ingestao)
     if percentual_formula:
         resultado["margem_bruta_percentual"] = percentual_formula[0]
         resultado["margem_bruta_percentual_metodo"] = "ponderada_por_soma_da_margem_e_base_referenciada_em_formula"

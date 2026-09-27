@@ -937,6 +937,10 @@ def continuar_analytics(dataframe_original, contexto, diretorio_saida, entity_re
     automatic_mappings = contexto["automatic_mappings"]
     semantic_mappings = contexto["semantic_mappings"]
     df_analise = aplicar_aliases(dataframe_original, entity_report)
+    # A auditoria completa permanece no original/contexto, sem acompanhar cada operação pandas.
+    ingestao_analitica = df_analise.attrs.get("ingestao")
+    if isinstance(ingestao_analitica, dict):
+        df_analise.attrs.pop("ingestao")
 
     mapeamento = mapear_colunas(
         df_analise
@@ -984,7 +988,7 @@ def continuar_analytics(dataframe_original, contexto, diretorio_saida, entity_re
     # ========================================
 
     kpis = calcular_kpis(
-        df_analise
+        df_analise, ingestao=ingestao_analitica
     )
 
     print(
