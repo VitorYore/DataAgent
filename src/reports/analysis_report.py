@@ -78,7 +78,9 @@ def salvar_analise(
     produtos: dict,
     oportunidades: list,
     insights: list,
-    caminho_saida: str = "reports/analise.json"
+    caminho_saida: str = "reports/analise.json",
+    achados_analiticos: list | None = None,
+    achados_principais: list | None = None,
 ) -> None:
 
     caminho = Path(
@@ -99,7 +101,9 @@ def salvar_analise(
         "dimensoes": dimensoes,
         "produtos": produtos,
         "oportunidades": oportunidades,
-        "insights": insights
+        "insights": insights,
+        "achados_analiticos": achados_analiticos or [],
+        "achados_principais": achados_principais or [],
     }
 
     with open(

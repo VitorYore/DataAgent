@@ -2,6 +2,7 @@ import pandas as pd
 
 from src.analytics.column_mapper import mapear_colunas
 from src.analytics.business import encontrar_coluna_por_papel
+from src.analytics.temporal_comparison import comparar_serie
 
 
 def analisar_meses(df: pd.DataFrame) -> dict:
@@ -87,47 +88,9 @@ def analisar_meses(df: pd.DataFrame) -> dict:
     # VARIAÇÃO ENTRE MESES CONSECUTIVOS
     # ========================================
 
-    variacao_mensal = {}
-
-    periodos = list(
-        valores_mensais.index
-    )
-
-    for indice in range(1, len(periodos)):
-
-        periodo_atual = periodos[indice]
-        periodo_anterior = periodos[indice - 1]
-
-        # Verifica se o período anterior é realmente
-        # o mês imediatamente anterior
-        if (
-            periodo_anterior + 1
-            != periodo_atual
-        ):
-            continue
-
-        valor_atual = valores_mensais.loc[
-            periodo_atual
-        ]
-
-        valor_anterior = valores_mensais.loc[
-            periodo_anterior
-        ]
-
-        if valor_anterior == 0:
-            continue
-
-        variacao = (
-            (valor_atual - valor_anterior)
-            / valor_anterior
-        ) * 100
-
-        variacao_mensal[
-            str(periodo_atual)
-        ] = round(
-            variacao,
-            2
-        )
+    valores_precisos = {str(p): float(v) for p, v in valores_mensais.items()}
+    comparacoes = comparar_serie(valores_precisos)
+    variacao_mensal = {item["current_period"]: item["percentage_change"] for item in comparacoes}
 
     # ========================================
     # PERÍODOS SUSPEITOS
@@ -170,7 +133,12 @@ def analisar_meses(df: pd.DataFrame) -> dict:
             str(periodo): round(valor, 2)
             for periodo, valor in valores_mensais.items()
         },
+        "valores_mensais_precisos": valores_precisos,
         "variacao_mensal": variacao_mensal,
+        "comparacoes": comparacoes,
+        "granularidade": "M",
+        "registros_por_periodo": {str(p): int(n) for p, n in quantidade_registros.items()},
+        "cobertura": {"registros_entrada": int(len(df)), "registros_validos": int(len(dados))},
         "periodos_suspeitos": periodos_suspeitos,
     }
     if metrica == "faturamento":

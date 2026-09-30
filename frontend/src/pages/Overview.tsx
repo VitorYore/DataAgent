@@ -1,4 +1,6 @@
 import { Banknote, CircleDollarSign, Percent, Receipt, ShoppingCart, Wallet } from 'lucide-react'
+import { Link } from 'react-router'
+import { AnalyticalFindingCard } from '../components/cards/AnalyticalFindingCard'
 import { ExecutiveSummaryPage } from '../components/common/ExecutiveSummaryPage'
 import { AnalysisSection } from '../components/common/AnalysisSection'
 import { EmptyState } from '../components/common/EmptyState'
@@ -17,6 +19,7 @@ export default function Overview() {
           return <EmptyState title="Nenhuma análise disponível" description="O resumo executivo será exibido quando houver dados de análise disponíveis." />
         }
         const { status_geral, kpis, temporal, principais_riscos, oportunidades, principais_insights } = summary
+        const hasFindings = summary.achados_principais !== undefined
         const metricName = temporal.nome_metrica_principal ?? 'Faturamento'
         const trend = temporal.evolucao_motivo ? undefined : temporal.tendencia_metrica ?? (!temporal.metrica_principal || temporal.metrica_principal === 'faturamento' ? temporal.tendencia_faturamento : undefined)
         const evolution = temporal.evolucao_motivo ? undefined : temporal.evolucao_metrica ?? (!temporal.metrica_principal || temporal.metrica_principal === 'faturamento' ? temporal.evolucao_faturamento : undefined)
@@ -41,6 +44,12 @@ export default function Overview() {
                 {kpis.quantidade_registros != null && kpis.quantidade_pedidos == null && <KpiCard title="Registros" value={formatInteger(kpis.quantidade_registros)} icon={Receipt} />}
               </div>
             </AnalysisSection>
+            {hasFindings && <AnalysisSection title="Principais Achados" description={summary.achados_analiticos ? `${summary.achados_principais!.length} principais de ${summary.achados_analiticos.length} achados` : undefined}>
+              {summary.achados_principais!.length > 0
+                ? <div className="grid items-start gap-4 xl:grid-cols-2">{summary.achados_principais!.map(finding => <AnalyticalFindingCard key={finding.id} finding={finding} />)}</div>
+                : <EmptyState title="Nenhum achado analítico prioritário" description="Nenhum achado analítico prioritário foi identificado com as evidências disponíveis." />}
+              <Link to="/opportunities" className="mt-4 inline-block rounded-lg border border-line px-4 py-2 text-sm text-accent">Ver todos os achados</Link>
+            </AnalysisSection>}
             {hasTemporal && <AnalysisSection title="Desempenho">
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {trend && <KpiCard title={`Tendência de ${metricName}`} value={trend} />}
@@ -51,7 +60,7 @@ export default function Overview() {
                 {temporal.maior_queda && <KpiCard title="Maior queda" value={formatPercentage(temporal.maior_queda.variacao)} detail={temporal.maior_queda.periodo} />}
               </div>
             </AnalysisSection>}
-            <AnalysisSection title="Principais riscos">
+            {!hasFindings && <><AnalysisSection title="Principais riscos">
               {principais_riscos.length > 0 ? <div className="grid gap-4 xl:grid-cols-2">{principais_riscos.map((risk, index) => <div key={index} className={risk.prioridade === 'alta' ? 'min-w-0 rounded-xl border-l-2 border-amber-300/40' : 'min-w-0'}><RiskCard risk={risk} /></div>)}</div> : <EmptyState title="Nenhum risco informado" description="A análise atual não contém riscos para exibir." />}
             </AnalysisSection>
             <AnalysisSection title="Oportunidades">
@@ -59,7 +68,7 @@ export default function Overview() {
             </AnalysisSection>
             <AnalysisSection title="Principais insights">
               {principais_insights.length > 0 ? <div className="grid gap-4 xl:grid-cols-2">{principais_insights.map((insight, index) => <InsightCard key={index} insight={insight} />)}</div> : <EmptyState title="Nenhum insight informado" description="A análise atual não contém insights para exibir." />}
-            </AnalysisSection>
+            </AnalysisSection></>}
           </>
         )
       }}

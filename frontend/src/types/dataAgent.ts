@@ -130,6 +130,8 @@ export interface Insight {
 }
 
 export interface ExecutiveSummary {
+  achados_analiticos?: import('./findings').AnalyticalFinding[]
+  achados_principais?: import('./findings').AnalyticalFinding[]
   analysis_id?: string | null
   suficiencia_analitica?: 'suficiente' | 'insuficiente' | 'aguardando_mapeamento' | string
   dados?: DataQuality | null

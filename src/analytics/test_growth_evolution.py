@@ -34,9 +34,11 @@ class GrowthEvolutionTests(unittest.TestCase):
         self.assertEqual(result['variacao_absoluta'], 99999)
 
     def test_sign_changes_are_explicit_and_negative_values_keep_direction(self):
-        for values in ([-1, 100000], [100000, -1]):
-            self.assertEqual(avaliar_evolucao_total(pd.Series(values))['motivo'], 'mudanca_de_sinal')
-        self.assertEqual(calcular_evolucao_total(pd.Series([-100, -80])), 20.0)
+        self.assertEqual(avaliar_evolucao_total(pd.Series([-1, 100000]))['motivo'], 'base_negativa')
+        self.assertEqual(avaliar_evolucao_total(pd.Series([100000, -1]))['motivo'], 'mudanca_de_sinal')
+        result = avaliar_evolucao_total(pd.Series([-100, -80]))
+        self.assertIsNone(result['variacao_percentual'])
+        self.assertEqual(result['variacao_absoluta'], 20.0)
 
     def test_customer_negative_insight_has_correct_singular_and_plural(self):
         one = analisar_clientes(pd.DataFrame({'Cliente': ['A'], 'Lucro': [-1]}))

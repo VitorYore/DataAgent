@@ -65,6 +65,15 @@ def analisar_desempenho(
         2
     )
 
+    resultado["evidencias_negativos"] = {
+        "registros": int(len(df)),
+        "registros_validos": int(df[coluna_lucro].notna().sum()),
+        "populacao": int(df[coluna_lucro].notna().sum()),
+        "negativos": int(len(registros_prejuizo)),
+        "soma_negativos": float(registros_prejuizo[coluna_lucro].sum()),
+        "soma_absoluta": float(df[coluna_lucro].abs().sum()),
+    }
+
     # ========================================
     # 3. ANÁLISE TEMPORAL DE LUCRO
     # ========================================
@@ -79,19 +88,23 @@ def analisar_desempenho(
             ]
         ).copy()
 
+        if not pd.api.types.is_datetime64_any_dtype(dados[coluna_data]):
+            dados[coluna_data] = pd.to_datetime(dados[coluna_data], errors="coerce", format="mixed", dayfirst=True)
+            dados = dados.dropna(subset=[coluna_data])
+
         dados["Periodo"] = (
             dados[coluna_data]
             .dt.to_period("M")
         )
 
-        lucro_mensal = (
-            dados
-            .groupby("Periodo")[
-                coluna_lucro
-            ]
-            .sum()
-            .sort_index()
-        )
+        grupos_lucro = dados.groupby("Periodo")[coluna_lucro]
+        lucro_mensal = grupos_lucro.sum().sort_index()
+        resultado["lucro_mensal_preciso"] = {str(p): float(v) for p, v in lucro_mensal.items()}
+        resultado["registros_por_periodo"] = {str(p): int(n) for p, n in grupos_lucro.count().items()}
+
+        resultado["cobertura_temporal"] = {
+            "registros_entrada": int(len(fonte_temporal)), "registros_validos": int(len(dados)),
+        }
 
         if not lucro_mensal.empty:
 

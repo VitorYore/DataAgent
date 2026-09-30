@@ -117,6 +117,8 @@ test('multitabela envia todos os arquivos e disponibiliza o mesmo resultado nas 
   expect(result.status()).toBe(200)
   const body = await result.json()
   expect(body.files_processed).toBe(3)
+  expect(Array.isArray(body.summary.achados_analiticos)).toBe(true)
+  expect(Array.isArray(body.summary.achados_principais)).toBe(true)
   await expect(page).toHaveURL('/')
   const revenue = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(body.summary.kpis.faturamento_total)
   await expect(page.getByRole('region', { name: 'KPIs', exact: true })).toContainText(revenue)
@@ -127,7 +129,9 @@ test('multitabela envia todos os arquivos e disponibiliza o mesmo resultado nas 
   await page.getByRole('link', { name: 'Clientes', exact: true }).click()
   await expect(page.getByRole('region', { name: 'Visão da base' })).toContainText(String(body.summary.clientes.quantidade_clientes))
   await page.getByRole('link', { name: 'Oportunidades', exact: true }).click()
-  await expect(page.getByRole('region', { name: 'Pontos de Atenção' })).toBeVisible()
+  const findings = page.getByRole('region', { name: 'Todos os achados' })
+  await expect(findings).toBeVisible()
+  await expect(findings.getByRole('article')).toHaveCount(Math.min(10, body.summary.achados_analiticos.length))
 })
 
 test('diagnostico de entidades no upload preserva clientes e historico', async ({ page }) => {

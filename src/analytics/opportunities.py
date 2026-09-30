@@ -68,8 +68,7 @@ def analisar_oportunidades(
                 "alta",
                 'tendencia_faturamento',
                 (
-                    "O faturamento apresenta tendência "
-                    "de queda"
+                    "O faturamento diminuiu entre o primeiro e o último período observado"
                     + (f" ({evolucao}%). " if evolucao is not None else ". ")
                     +
                     "Vale investigar os períodos e "
@@ -134,8 +133,7 @@ def analisar_oportunidades(
                 "alta",
                 'tendencia_lucro',
                 (
-                    "O lucro apresenta tendência "
-                    f"de queda "
+                    "O lucro diminuiu entre o primeiro e o último período observado "
                     + (f"({dados['evolucao_total']}%). " if dados.get('evolucao_total') is not None else "no período analisado. ")
                     +
                     "Vale revisar custos, margens "

@@ -86,6 +86,9 @@ from src.etl.exporter import (
 from src.analytics.column_mapper import (
     mapear_colunas
 )
+from src.analytics.findings import gerar_achados_analiticos
+from src.analytics.finding_selection import selecionar_achados_principais
+from src.analytics.entity_evolution import agregar_entidades_periodo
 
 from src.analytics.business import (
     calcular_kpis
@@ -1090,7 +1093,7 @@ def continuar_analytics(dataframe_original, contexto, diretorio_saida, entity_re
 
             print(
                 f"- {periodo}: "
-                f"{variacao}%"
+                + (f"{variacao}%" if variacao is not None else "Percentual indisponível")
             )
 
         print(
@@ -1393,7 +1396,7 @@ def continuar_analytics(dataframe_original, contexto, diretorio_saida, entity_re
     # ========================================
 
     crescimento = analisar_crescimento(
-        df_temporal
+        df_temporal, analise_mensal=analise_mensal, desempenho=desempenho,
     )
 
     print(
@@ -1425,7 +1428,7 @@ def continuar_analytics(dataframe_original, contexto, diretorio_saida, entity_re
 
         print(
             f"- Evolução total: "
-            f"{faturamento['evolucao_total']}%"
+            + (f"{faturamento['evolucao_total']}%" if faturamento['evolucao_total'] is not None else "Percentual indisponível")
         )
 
         if (
@@ -1524,7 +1527,7 @@ def continuar_analytics(dataframe_original, contexto, diretorio_saida, entity_re
 
             print(
                 f"- Evolução total: "
-                f"{lucro['evolucao_total']}%"
+                + (f"{lucro['evolucao_total']}%" if lucro['evolucao_total'] is not None else "Percentual indisponível")
             )
 
     # ========================================
@@ -2034,6 +2037,18 @@ def continuar_analytics(dataframe_original, contexto, diretorio_saida, entity_re
     }
     resumo_executivo['analysis_id'] = analysis_id
     resumo_executivo['dados']['entity_resolution'] = entity_report
+    series_entidades = {}
+    if analise_mensal.get('metrica'):
+        series_entidades[analise_mensal['metrica']] = analise_mensal.get('valores_mensais_precisos', {})
+    if desempenho.get('lucro_mensal_preciso'):
+        series_entidades['lucro'] = desempenho['lucro_mensal_preciso']
+    entidades_temporais = agregar_entidades_periodo(df_temporal, mapeamento, series_entidades, entity_report)
+    resumo_executivo['achados_analiticos'] = gerar_achados_analiticos(
+        analise_clientes, desempenho, analysis_id=analysis_id,
+        temporal=analise_mensal, crescimento=crescimento,
+        entidades=entidades_temporais,
+    )
+    resumo_executivo['achados_principais'] = selecionar_achados_principais(resumo_executivo['achados_analiticos'])
     print(
         "\n=== RESUMO EXECUTIVO ===\n"
     )
@@ -2185,7 +2200,9 @@ def continuar_analytics(dataframe_original, contexto, diretorio_saida, entity_re
         produtos,
         oportunidades,
         insights,
-        caminho_saida=diretorio_saida / "reports/analise.json"
+        caminho_saida=diretorio_saida / "reports/analise.json",
+        achados_analiticos=resumo_executivo['achados_analiticos'],
+        achados_principais=resumo_executivo['achados_principais'],
     )
 
     print(

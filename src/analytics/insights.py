@@ -48,7 +48,7 @@ def gerar_insights(
         analise_mensal
         and "erro" not in analise_mensal
     ):
-
+        avaliativo = analise_mensal.get("metrica", "faturamento") != "custo"
         melhor_mes = analise_mensal.get(
             "melhor_mes"
         )
@@ -59,7 +59,7 @@ def gerar_insights(
             if valor_metrica is not None:
                 adicionar_insight(
                     insights,
-                    "positivo",
+                    "positivo" if avaliativo else "informativo",
                     f"O período {melhor_mes['periodo']} apresentou o maior valor de {nome_metrica}, totalizando {valor_metrica}.",
                     "melhor_periodo",
                     "media",
@@ -92,7 +92,7 @@ def gerar_insights(
 
                 adicionar_insight(
                     insights,
-                    "atencao",
+                    "atencao" if avaliativo else "informativo",
                     (
                         "A maior queda mensal ocorreu "
                         f"em {maior_queda}, com redução "
@@ -110,7 +110,7 @@ def gerar_insights(
 
                 adicionar_insight(
                     insights,
-                    "positivo",
+                    "positivo" if avaliativo else "informativo",
                     (
                         "O maior crescimento mensal "
                         f"ocorreu em {maior_crescimento}, "
@@ -144,9 +144,8 @@ def gerar_insights(
                 insights,
                 "atencao",
                 (
-                    "Considerando o período analisado, "
-                    "o faturamento apresenta tendência "
-                    "de queda "
+                    "Entre o primeiro e o último período observado, "
+                    "o faturamento apresentou redução "
                     + (f"{abs(dados['evolucao_total'])}%." if dados.get('evolucao_total') is not None else "no período analisado.")
                 ),
                 'tendencia_faturamento',

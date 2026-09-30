@@ -54,13 +54,27 @@ def analisar_clientes(df: pd.DataFrame) -> dict:
         "participacao_maior_cliente_metrica": None, "concentracao_top_5": None,
         "concentracao_top_5_metrica": None, "clientes_resultado_negativo": None,
         "clientes_metrica_negativa": None, "ranking_faturamento": [], "ranking_lucro": [],
-        "insights_clientes": [],
+        "insights_clientes": [], "evidencias_metricas": {},
     }
 
     for concept, label in METRICAS_CLIENTE:
         ordered = values[concept]
         if ordered.empty:
             continue
+        column = columns[concept]
+        result["evidencias_metricas"][concept] = {
+            "registros": int(len(df)),
+            "registros_validos": int((df[group_col].notna() & df[column].notna()).sum()),
+            "populacao": int(len(ordered)),
+            "identidade_por_id": bool(id_col),
+            "negativos": int((ordered < 0).sum()),
+            "soma_negativos": float(ordered[ordered < 0].sum()),
+            "soma_absoluta": float(ordered.abs().sum()),
+            "top1_valor": float(ordered.iloc[0]),
+            "top5_valor": float(ordered.head(5).sum()),
+            "total_metrica": float(df[column].sum(min_count=1)),
+            "registros_negativos": int((df[column] < 0).sum()),
+        }
         ranked = _ranking(ordered, labels_by_id, bool(id_col), concept)
         result["rankings"][concept] = {"conceito": concept, "label": label, "items": ranked}
         leader_id = ordered.index[0]

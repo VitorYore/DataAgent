@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { AnalyticalFindingsExplorer } from '../components/common/AnalyticalFindingsExplorer'
 import { OpportunityCard } from '../components/cards/OpportunityCard'
 import { RiskCard } from '../components/cards/RiskCard'
 import { InsightCard } from '../components/cards/InsightCard'
@@ -65,7 +66,9 @@ function Findings({ summary }: { summary: ExecutiveSummary }) {
 export default function Opportunities() {
   return (
     <ExecutiveSummaryPage title="Oportunidades" description="Oportunidades, riscos e insights identificados pela análise.">
-      {(summary) => <Findings summary={summary} />}
+      {(summary) => summary.achados_principais !== undefined
+        ? <AnalyticalFindingsExplorer key={summary.analysis_id} findings={summary.achados_analiticos ?? []} />
+        : <Findings summary={summary} />}
     </ExecutiveSummaryPage>
   )
 }

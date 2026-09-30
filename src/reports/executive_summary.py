@@ -1,5 +1,5 @@
 from src.analytics.insight_engine import para_relatorio, organizar_listas
-from src.analytics.growth import avaliar_evolucao_total
+from src.analytics.growth import avaliar_evolucao_total, definir_tendencia
 from typing import Any
 
 import pandas as pd
@@ -163,11 +163,12 @@ def gerar_resumo_temporal(
         nome_metrica = analise_mensal.get("nome_metrica", "Faturamento")
         resultado["metrica_principal"] = metrica
         resultado["nome_metrica_principal"] = nome_metrica
-        valores = analise_mensal.get("valores_mensais", analise_mensal.get("faturamento_mensal", {}))
+        valores = analise_mensal.get("valores_mensais_precisos",
+                                    analise_mensal.get("valores_mensais", analise_mensal.get("faturamento_mensal", {})))
         if len(valores) >= 2:
             periodos_ordenados = sorted(valores)
             serie = [valores[periodo] for periodo in periodos_ordenados]
-            avaliacao = avaliar_evolucao_total(pd.Series(serie))
+            avaliacao = avaliar_evolucao_total(pd.Series(valores))
             primeiro, ultimo = serie[0], serie[-1]
             resultado["periodo_evolucao"] = {
                 "inicio": periodos_ordenados[0], "fim": periodos_ordenados[-1],
@@ -176,10 +177,14 @@ def gerar_resumo_temporal(
             resultado["evolucao_variacao_absoluta"] = avaliacao["variacao_absoluta"]
             resultado["evolucao_motivo"] = avaliacao["motivo"]
             resultado["evolucao_metrica"] = avaliacao["variacao_percentual"]
+            resultado["comparacao_total"] = avaliacao.get("comparacao")
+            resultado["comparacoes"] = analise_mensal.get("comparacoes", [])
+            resultado["granularidade"] = analise_mensal.get("granularidade", "M")
+            resultado["cobertura"] = analise_mensal.get("cobertura", {})
             if avaliacao["variacao_percentual"] is not None:
                 resultado["tendencia_metrica"] = (
-                    "alta" if avaliacao["variacao_percentual"] > 0
-                    else "queda" if avaliacao["variacao_percentual"] < 0
+                    "alta" if definir_tendencia(avaliacao["variacao_percentual"]) == "crescimento"
+                    else "queda" if definir_tendencia(avaliacao["variacao_percentual"]) == "queda"
                     else "estavel"
                 )
 
@@ -332,16 +337,6 @@ def gerar_resumo_temporal(
             resultado["periodo_analitico"] = {"inicio": periods[0], "fim": periods[-1]}
         if analise_mensal.get("anomalias_temporais"):
             resultado["anomalias_temporais"] = analise_mensal["anomalias_temporais"]
-        if "evolucao_total" in analise_mensal:
-            resultado["evolucao_metrica"] = analise_mensal.get("evolucao_total")
-            resultado["evolucao_motivo"] = analise_mensal.get("evolucao_motivo")
-            resultado["evolucao_variacao_absoluta"] = analise_mensal.get("evolucao_variacao_absoluta")
-            if analise_mensal.get("evolucao_total") is not None:
-                resultado["tendencia_metrica"] = (
-                    "alta" if analise_mensal["evolucao_total"] > 0
-                    else "queda" if analise_mensal["evolucao_total"] < 0
-                    else "estavel"
-                )
 
     return resultado
 
@@ -444,6 +439,7 @@ def gerar_resumo_clientes(
         "concentracao_top_5_metrica", "rankings", "maior_valor_total",
         "maior_valor_com_desconto", "maior_margem_bruta",
         "clientes_metrica_negativa", "clientes_margem_bruta_negativa",
+        "evidencias_metricas",
     ):
         if campo in analise_clientes:
             resultado[campo] = analise_clientes[campo]
@@ -1002,6 +998,9 @@ def gerar_resumo_executivo(
 ) -> dict:
 
     resumo = {
+
+        "achados_analiticos": [],
+        "achados_principais": [],
 
         "status_geral": (
             calcular_status_geral(
