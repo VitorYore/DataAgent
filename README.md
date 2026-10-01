@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/Agente_Capa.png" alt="DataAgent - Visão Geral" width="100%">
+  <img src="docs/Agente_Capa.png" alt="DataAgent - Visão Geral" width="100%">
 </p>
 
 <p align="center">
@@ -76,7 +76,7 @@ A página **Dados** funciona como ponto de entrada para novas análises.
 O usuário pode enviar um ou vários arquivos CSV ou Excel. Cada nova análise utiliza somente o conjunto de arquivos selecionado para aquela execução.
 
 <p align="center">
-  <img src="docs/images/Agente_carregador_de_dados.png" alt="DataAgent - Upload de dados" width="100%">
+  <img src="docs/Agente_carregador_de_dados.png" alt="DataAgent - Upload de dados" width="100%">
 </p>
 
 <p align="center">
@@ -100,7 +100,7 @@ Além do upload, essa área concentra informações relacionadas a:
 Depois do processamento, os indicadores identificados pelo pipeline são apresentados de acordo com os conceitos realmente disponíveis no dataset.
 
 <p align="center">
-  <img src="docs/images/Agente_desempenho.png" alt="DataAgent - Indicadores de desempenho" width="100%">
+  <img src="docs/Agente_desempenho.png" alt="DataAgent - Indicadores de desempenho" width="100%">
 </p>
 
 <p align="center">
@@ -129,7 +129,7 @@ O sistema preserva o significado semântico das métricas. Uma coluna identifica
 Quando existem informações suficientes sobre clientes, o DataAgent cria análises específicas para essa dimensão.
 
 <p align="center">
-  <img src="docs/images/Agente_clientes.png" alt="DataAgent - Análise de clientes" width="100%">
+  <img src="docs/Agente_clientes.png" alt="DataAgent - Análise de clientes" width="100%">
 </p>
 
 <p align="center">
@@ -155,7 +155,7 @@ Sempre que existe um identificador estável, o DataAgent utiliza o ID para reali
 Além de apresentar métricas, o DataAgent transforma evidências encontradas nos dados em achados analíticos estruturados.
 
 <p align="center">
-  <img src="docs/images/Agente_oportunidades_riscos.png" alt="DataAgent - Achados analíticos" width="100%">
+  <img src="docs/Agente_oportunidades_riscos.png" alt="DataAgent - Achados analíticos, riscos e oportunidades" width="100%">
 </p>
 
 <p align="center">
